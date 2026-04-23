@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import SectionTitle from "@/components/system/SectionTitle";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import {
   sectionPageX,
   sectionTitleMarginDisplay,
@@ -161,21 +161,19 @@ export default function WorkSection() {
     <section
       className={`bg-surface-container-lowest ${sectionPageX} pt-20 md:pt-24 ${sectionStackBottom}`}
     >
-      <div
+      <SectionCharReveal
+        as="div"
+        layout="flow"
+        scrubEnd="+=120%"
+        titleVariant="display"
         className={`mx-auto flex max-w-7xl flex-col items-end justify-between gap-8 md:flex-row ${sectionTitleMarginDisplay}`}
-      >
-        <SectionTitle as="h2" variant="display" reveal>
-          Selected
-          <br />
-          works
-        </SectionTitle>
-        <p
-          data-g-step="true"
-          className="max-w-sm border-b border-primary pb-2 font-body text-xs font-bold uppercase tracking-widest text-neutral-700"
-        >
-          View Archive (24)
-        </p>
-      </div>
+        title={"Selected\nworks"}
+        trailing={
+          <p className="max-w-sm border-b border-primary pb-2 font-body text-xs font-bold uppercase tracking-widest text-neutral-700">
+            View Archive (24)
+          </p>
+        }
+      />
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 sm:gap-4 md:grid-cols-12 md:gap-4">
         {projects.map((project) => (
           <WorkBentoCard key={project.id} {...project} />

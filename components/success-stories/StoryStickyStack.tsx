@@ -7,7 +7,6 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import type { CSSProperties } from "react";
 import type { CaseStudyContent } from "@/lib/case-studies";
 import { fadeUpScrollOnce, parallaxScroll, prefersReducedMotion } from "@/lib/motion/animations";
 
@@ -117,16 +116,14 @@ function StoryStackCard({ study, index }: { study: CaseStudyContent; index: numb
     { scope: rootRef, revertOnUpdate: true }
   );
 
-  const stackRunwayStyle: CSSProperties = {
-    minHeight: `calc(100dvh + ${STACK_SCROLL_RUNWAY_VH}vh)`,
-    ...(index > 0
-      ? { marginTop: `calc(-1 * min(${STACK_OVERLAP_VH}vh, 780px))` }
-      : {}),
-    zIndex: 10 + index * 10,
-  };
-
   return (
-    <div ref={wrapRef} className="relative w-full" style={stackRunwayStyle}>
+    <div
+      ref={wrapRef}
+      className={`relative w-full min-h-[calc(100dvh+${STACK_SCROLL_RUNWAY_VH}vh)] ${
+        index > 0 ? `-mt-[min(${STACK_OVERLAP_VH}vh,780px)]` : ""
+      }`}
+      style={{ zIndex: 10 + index * 10 }}
+    >
       <Link
         href={`/success-stories/${study.slug}`}
         ref={rootRef}

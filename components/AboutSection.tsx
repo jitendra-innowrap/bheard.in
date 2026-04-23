@@ -1,5 +1,7 @@
+"use client";
+
 import Image from "next/image";
-import SectionTitle from "@/components/system/SectionTitle";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import { sectionPageX, sectionStackTop } from "@/components/system/sectionTheme";
 
 export default function AboutSection() {
@@ -12,11 +14,13 @@ export default function AboutSection() {
           <div className="relative">
             <div className="sticky top-40">
               <div className="mb-12">
-                <SectionTitle as="h2" variant="display" reveal>
-                  About
-                  <br />
-                  Bheard.
-                </SectionTitle>
+                <SectionCharReveal
+                  as="div"
+                  layout="flow"
+                  scrubEnd="+=110%"
+                  titleVariant="display"
+                  title={"About\nBheard."}
+                />
               </div>
               <div className="w-24 h-1 bg-primary mb-8" />
             </div>

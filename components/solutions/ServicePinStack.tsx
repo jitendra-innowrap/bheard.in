@@ -199,6 +199,7 @@ export default function ServicePinStack({ eyebrow, heading, intro, items }: Serv
     },
     { scope: headRef, revertOnUpdate: true }
   );
+  
 
   return (
     <section className="relative bg-surface pb-section-y-sm pt-4 md:pb-section-y md:pt-10">

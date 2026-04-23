@@ -5,7 +5,7 @@ import Image from "next/image";
 import { RefObject, useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import SectionTitle, { SectionEyebrow } from "@/components/system/SectionTitle";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import { sectionBandY, sectionPageX, sectionTitleMarginCompact } from "@/components/system/sectionTheme";
 
 gsap.registerPlugin(useGSAP);
@@ -125,20 +125,16 @@ export default function ClientLogos() {
       ref={sectionRef}
       className={`relative overflow-hidden bg-surface-container-lowest ${sectionPageX} ${sectionBandY}`}
     >
-      <div
+      <SectionCharReveal
+        as="div"
+        layout="flow"
+        scrubEnd="+=140%"
         className={`mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-end ${sectionTitleMarginCompact}`}
-      >
-        <div>
-          <SectionEyebrow reveal>In good company</SectionEyebrow>
-          <SectionTitle as="h2" variant="compact" reveal>
-            Our clients
-          </SectionTitle>
-          <p className="mt-4 max-w-2xl font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
-            A snapshot of teams we ship with—hospitality, wellness, finance, and founder-led
-            brands across markets.
-          </p>
-        </div>
-      </div>
+        eyebrow="In good company"
+        title="Our clients"
+        description="A snapshot of teams we ship with—hospitality, wellness, finance, and founder-led brands across markets."
+        descriptionClassName="mt-4 max-w-2xl font-body text-sm leading-relaxed text-on-surface-variant md:text-base"
+      />
 
       <div className="relative space-y-5 md:space-y-6">
         <LogoStrip logos={rowOneLogos} stripRef={rowOneRef} label="Client logos strip one" />

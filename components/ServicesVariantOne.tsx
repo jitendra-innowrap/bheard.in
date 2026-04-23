@@ -5,9 +5,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import SectionTitle, {
-  SectionEyebrow,
-} from "@/components/system/SectionTitle";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import { sectionBandY, sectionPageX, sectionTitleMarginCompact } from "@/components/system/sectionTheme";
 import { parallaxScroll, prefersReducedMotion } from "@/lib/motion/animations";
 
@@ -50,17 +48,15 @@ export default function ServicesVariantOne() {
   return (
     <section ref={sectionRef} className={`bg-surface ${sectionPageX} ${sectionBandY}`}>
       <div className="mx-auto max-w-7xl">
-        <header className={sectionTitleMarginCompact}>
-          <SectionEyebrow reveal>Proof of craft</SectionEyebrow>
-          <SectionTitle as="h2" variant="compact" reveal>
-            Outcomes in the wild
-          </SectionTitle>
-          <p className="mt-4 max-w-2xl font-body text-base leading-relaxed text-on-surface-variant md:text-lg">
-            A look at how we pair narrative, design, and performance—without repeating the
-            service catalog above. Real constraints, measurable deltas, and the craft behind
-            the delivery.
-          </p>
-        </header>
+        <SectionCharReveal
+          as="div"
+          layout="flow"
+          scrubEnd="+=150%"
+          className={sectionTitleMarginCompact}
+          eyebrow="Proof of craft"
+          title="Outcomes in the wild"
+          description="A look at how we pair narrative, design, and performance—without repeating the service catalog above. Real constraints, measurable deltas, and the craft behind the delivery."
+        />
 
         <div className="space-y-4 md:space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-12">

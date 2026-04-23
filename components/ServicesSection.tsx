@@ -5,7 +5,7 @@ import { CSSProperties, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import SectionTitle, { SectionEyebrow } from "@/components/system/SectionTitle";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import {
   sectionPageX,
   sectionStackTop,
@@ -170,16 +170,15 @@ export default function ServicesSection() {
       ref={sectionRef}
       className={`bg-surface ${sectionPageX} ${sectionStackTop} pb-20 md:pb-24`}
     >
-      <div className={`mx-auto max-w-7xl ${sectionTitleMarginCompact} lg:mb-14`}>
-        <SectionEyebrow reveal>How we work</SectionEyebrow>
-        <SectionTitle as="h2" variant="compact" reveal>
-          Our services
-        </SectionTitle>
-        <p className="mt-4 max-w-2xl font-body text-base leading-relaxed text-on-surface-variant md:text-lg">
-          Strategy, creative, and engineering in one loop—so positioning, campaigns, and
-          product experiences stay aligned from brief to launch.
-        </p>
-      </div>
+      <SectionCharReveal
+        as="div"
+        layout="flow"
+        scrubEnd="+=150%"
+        className={`mx-auto max-w-7xl ${sectionTitleMarginCompact} lg:mb-14`}
+        eyebrow="How we work"
+        title="Our services"
+        description="Strategy, creative, and engineering in one loop—so positioning, campaigns, and product experiences stay aligned from brief to launch."
+      />
 
       <div className="mx-auto max-w-7xl">
         <div
