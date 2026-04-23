@@ -1,10 +1,19 @@
 "use client";
 
+import "@/lib/motion/config";
 import { CSSProperties, useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionTitle, { SectionEyebrow } from "@/components/system/SectionTitle";
+import {
+  sectionPageX,
+  sectionStackTop,
+  sectionTitleMarginCompact,
+} from "@/components/system/sectionTheme";
+import { prefersReducedMotion } from "@/lib/motion/animations";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const brandServices = [
   "Social Media Management",
@@ -33,14 +42,20 @@ function PaneBlock({
 }) {
   return (
     <>
-      <h4 className="font-headline text-4xl font-black uppercase text-neutral-900">
+      <h4
+        data-pane-reveal
+        className="font-headline text-4xl font-black uppercase text-neutral-900"
+      >
         {title}
       </h4>
-      <p className="mt-4 max-w-lg text-on-surface-variant">{description}</p>
+      <p data-pane-reveal className="mt-4 max-w-lg text-on-surface-variant">
+        {description}
+      </p>
       <ul className="mt-8 space-y-3">
         {services.map((service) => (
           <li
             key={service}
+            data-pane-reveal
             className="border border-outline-variant/60 bg-surface px-4 py-3 text-sm font-semibold text-neutral-900 md:text-base"
           >
             {service}
@@ -77,22 +92,22 @@ export default function ServicesSection() {
       const animateTo = (split: string) => {
         gsap.to(card, {
           "--split": split,
-          duration: 0.78,
-          ease: "elastic.out(1, 0.75)",
+          duration: 0.65,
+          ease: "power3.out",
           overwrite: "auto",
         });
       };
 
       const focusBrand = () => {
         animateTo("85%");
-        gsap.to(brandContent, { x: 20, duration: 0.78, ease: "back.out(1.7)", overwrite: "auto" });
-        gsap.to(techContent, { x: 60, duration: 0.78, ease: "back.out(1.7)", overwrite: "auto" });
+        gsap.to(brandContent, { x: 20, duration: 0.65, ease: "power3.out", overwrite: "auto" });
+        gsap.to(techContent, { x: 60, duration: 0.65, ease: "power3.out", overwrite: "auto" });
       };
 
       const focusTech = () => {
         animateTo("15%");
-        gsap.to(brandContent, { x: -60, duration: 0.78, ease: "back.out(1.7)", overwrite: "auto" });
-        gsap.to(techContent, { x: -20, duration: 0.78, ease: "back.out(1.7)", overwrite: "auto" });
+        gsap.to(brandContent, { x: -60, duration: 0.65, ease: "power3.out", overwrite: "auto" });
+        gsap.to(techContent, { x: -20, duration: 0.65, ease: "power3.out", overwrite: "auto" });
       };
 
       const reset = () => {
@@ -118,12 +133,52 @@ export default function ServicesSection() {
     { scope: sectionRef }
   );
 
+  useGSAP(
+    () => {
+      if (prefersReducedMotion() || !sectionRef.current) {
+        return;
+      }
+
+      const panes = sectionRef.current.querySelectorAll<HTMLElement>("[data-pane-reveal]");
+      if (!panes.length) {
+        return;
+      }
+
+      gsap.fromTo(
+        panes,
+        { opacity: 0, y: 36, willChange: "transform" },
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.045,
+          duration: 0.52,
+          ease: "power3.out",
+          clearProps: "willChange",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            once: true,
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section ref={sectionRef} className="bg-surface px-8 py-32">
-      <div className="mx-auto mb-24 max-w-7xl">
-        <h3 className="font-headline text-display-lg font-black uppercase text-neutral-900 opacity-20">
-          OUR SERVICES
-        </h3>
+    <section
+      ref={sectionRef}
+      className={`bg-surface ${sectionPageX} ${sectionStackTop} pb-20 md:pb-24`}
+    >
+      <div className={`mx-auto max-w-7xl ${sectionTitleMarginCompact} lg:mb-14`}>
+        <SectionEyebrow reveal>How we work</SectionEyebrow>
+        <SectionTitle as="h2" variant="compact" reveal>
+          Our services
+        </SectionTitle>
+        <p className="mt-4 max-w-2xl font-body text-base leading-relaxed text-on-surface-variant md:text-lg">
+          Strategy, creative, and engineering in one loop—so positioning, campaigns, and
+          product experiences stay aligned from brief to launch.
+        </p>
       </div>
 
       <div className="mx-auto max-w-7xl">

@@ -9,9 +9,7 @@ import AboutSection from "@/components/AboutSection";
 import ClientLogos from "@/components/ClientLogos";
 import ServicesSection from "@/components/ServicesSection";
 import ServicesVariantOne from "@/components/ServicesVariantOne";
-import ServicesVariantFour from "@/components/ServicesVariantFour";
 import WorkSection from "@/components/WorkSection";
-import ProcessSection from "@/components/ProcessSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -22,13 +20,11 @@ export default function Home() {
       <main>
         <HeroSection />
         <OurBeliefSection />
-        <AboutSection />
-        <ClientLogos />
         <ServicesSection />
+        <ClientLogos />
         <ServicesVariantOne />
-        <ServicesVariantFour />
         <WorkSection />
-        {/* <ProcessSection /> */}
+        <AboutSection />
         <CTASection />
         <ScrollRevealEffects />
       </main>

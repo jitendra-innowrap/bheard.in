@@ -1,46 +1,47 @@
 "use client";
 
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "@/lib/motion/config";
 import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+import {
+  fadeUpScrollOnce,
+  initHeadingLetterScrub,
+  prefersReducedMotion,
+} from "@/lib/motion/animations";
 
 export default function ScrollRevealEffects() {
-  const scopeRef = useRef<HTMLDivElement | null>(null);
+  useGSAP(() => {
+    if (prefersReducedMotion()) {
+      return;
+    }
 
-  useGSAP(
-    () => {
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduceMotion) {
+    const main = document.querySelector("main");
+    if (!main) {
+      return;
+    }
+
+    main.querySelectorAll<HTMLElement>("h2[data-g-step], h3[data-g-step]").forEach((heading) => {
+      if (heading.closest("[data-motion-pinned]")) {
         return;
       }
+      if (heading.closest("[data-motion-exclude]")) {
+        return;
+      }
+      initHeadingLetterScrub(heading);
+    });
 
-      const targets = gsap.utils.toArray<HTMLElement>(
-        '[data-g-step="true"], section h1, section h2, section h3, section h4, section p'
-      );
+    main.querySelectorAll<HTMLElement>('[data-g-step="true"]').forEach((el) => {
+      if (el.closest("[data-motion-pinned]")) {
+        return;
+      }
+      if (el.closest("[data-motion-exclude]")) {
+        return;
+      }
+      if (el.dataset.motionScrubInit) {
+        return;
+      }
+      fadeUpScrollOnce(el);
+    });
+  });
 
-      targets.forEach((target) => {
-        gsap.fromTo(
-          target,
-          { y: 22, opacity: 0.01 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.65,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: target,
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      });
-    },
-    { scope: scopeRef }
-  );
-
-  return <div ref={scopeRef} aria-hidden className="hidden" />;
+  return null;
 }

@@ -72,6 +72,40 @@ const config: Config = {
         body: ["var(--font-manrope)"],
         label: ["var(--font-manrope)"],
       },
+      fontSize: {
+        "display-xl": [
+          "clamp(72px, 10vw, 140px)",
+          { lineHeight: "0.95", fontWeight: "800", letterSpacing: "-0.03em" },
+        ],
+        "display-lg": [
+          "clamp(48px, 7vw, 96px)",
+          { lineHeight: "1.0", fontWeight: "800", letterSpacing: "-0.02em" },
+        ],
+        headline: [
+          "clamp(32px, 4vw, 56px)",
+          { lineHeight: "1.1", fontWeight: "700", letterSpacing: "-0.01em" },
+        ],
+        title: ["clamp(20px, 2.5vw, 32px)", { lineHeight: "1.2", fontWeight: "600" }],
+        "body-lg": ["18px", { lineHeight: "1.7", fontWeight: "400" }],
+        "label-sm": ["11px", { lineHeight: "1.4", fontWeight: "600", letterSpacing: "0.15em" }],
+      },
+      spacing: {
+        "section-y": "120px",
+        "section-y-md": "80px",
+        "section-y-sm": "60px",
+        "content-max": "1280px",
+        gutter: "48px",
+        "gutter-sm": "24px",
+      },
+      keyframes: {
+        "social-marquee": {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-50%)" },
+        },
+      },
+      animation: {
+        "social-marquee": "social-marquee 22s linear infinite",
+      },
     },
   },
   plugins: [],

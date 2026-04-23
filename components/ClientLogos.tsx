@@ -1,9 +1,12 @@
 "use client";
 
+import "@/lib/motion/config";
 import Image from "next/image";
 import { RefObject, useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import SectionTitle, { SectionEyebrow } from "@/components/system/SectionTitle";
+import { sectionBandY, sectionPageX, sectionTitleMarginCompact } from "@/components/system/sectionTheme";
 
 gsap.registerPlugin(useGSAP);
 
@@ -120,12 +123,21 @@ export default function ClientLogos() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-surface-container-lowest py-20 md:py-24"
+      className={`relative overflow-hidden bg-surface-container-lowest ${sectionPageX} ${sectionBandY}`}
     >
-      <div className="mx-auto mb-10 flex w-full max-w-7xl items-end justify-between px-8 md:mb-12">
-        <h3 className="font-headline text-3xl font-black uppercase tracking-tight text-neutral-900 md:text-5xl">
-          Our Clients
-        </h3>
+      <div
+        className={`mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-end ${sectionTitleMarginCompact}`}
+      >
+        <div>
+          <SectionEyebrow reveal>In good company</SectionEyebrow>
+          <SectionTitle as="h2" variant="compact" reveal>
+            Our clients
+          </SectionTitle>
+          <p className="mt-4 max-w-2xl font-body text-sm leading-relaxed text-on-surface-variant md:text-base">
+            A snapshot of teams we ship with—hospitality, wellness, finance, and founder-led
+            brands across markets.
+          </p>
+        </div>
       </div>
 
       <div className="relative space-y-5 md:space-y-6">

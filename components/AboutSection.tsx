@@ -1,16 +1,23 @@
 import Image from "next/image";
+import SectionTitle from "@/components/system/SectionTitle";
+import { sectionPageX, sectionStackTop } from "@/components/system/sectionTheme";
 
 export default function AboutSection() {
   return (
-    <section className="py-32 md:py-64 bg-surface-container-lowest px-8">
+    <section
+      className={`bg-surface-container-lowest ${sectionPageX} ${sectionStackTop} pb-32 md:pb-52`}
+    >
       <div className="max-w-7xl mx-auto">
         <div className="asymmetric-grid gap-24">
           <div className="relative">
             <div className="sticky top-40">
-              <h2 className="font-headline font-black text-5xl md:text-7xl uppercase tracking-tighter text-neutral-900 mb-12 leading-[0.9]">
-                About
-                <br /> Bheard.
-              </h2>
+              <div className="mb-12">
+                <SectionTitle as="h2" variant="display" reveal>
+                  About
+                  <br />
+                  Bheard.
+                </SectionTitle>
+              </div>
               <div className="w-24 h-1 bg-primary mb-8" />
             </div>
           </div>

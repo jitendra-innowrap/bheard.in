@@ -1,9 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+import "@/lib/motion/config";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { SectionEyebrow } from "@/components/system/SectionTitle";
+import { sectionPageX, sectionStackBottom } from "@/components/system/sectionTheme";
+import { prefersReducedMotion } from "@/lib/motion/animations";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -12,45 +16,71 @@ const beliefText =
 
 export default function OurBeliefSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const beliefChars = useMemo(() => {
+    return beliefText.split("").map((char, idx) => {
+      if (char === " ") {
+        return (
+          <span key={`sp-${idx}`} data-belief-char className="inline-block">
+            &nbsp;
+          </span>
+        );
+      }
+      return (
+        <span key={`c-${idx}`} data-belief-char className="inline-block">
+          {char}
+        </span>
+      );
+    });
+  }, []);
 
   useGSAP(
     () => {
-      gsap.fromTo(
-        '[data-belief-word="true"]',
-        { y: 20, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.03,
-          duration: 0.5,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            once: true,
-          },
-        }
-      );
+      const root = sectionRef.current;
+      const chars = root?.querySelectorAll<HTMLElement>("[data-belief-char]");
+      if (!root || !chars?.length) {
+        return;
+      }
+
+      if (prefersReducedMotion()) {
+        gsap.set(chars, { opacity: 1, y: 0, clearProps: "all" });
+        return;
+      }
+
+      gsap.set(chars, { opacity: 0.05, y: 32, willChange: "transform" });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: "+=150%",
+          pin: true,
+          scrub: 0.55,
+          anticipatePin: 1,
+        },
+      });
+
+      tl.to(chars, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.008,
+        ease: "none",
+        duration: 0.78,
+      });
+
     },
     { scope: sectionRef }
   );
 
   return (
-    <section ref={sectionRef} className="bg-surface px-8 py-20 md:py-24">
-      <div className="mx-auto max-w-5xl border-y border-outline-variant/50 py-8 md:py-10">
-        <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-primary">
-          Our Belief
-        </p>
+    <section
+      ref={sectionRef}
+      data-motion-pinned
+      className={`flex min-h-[100dvh] flex-col justify-center bg-surface ${sectionPageX} py-16 md:py-20 ${sectionStackBottom}`}
+    >
+      <div className="mx-auto max-w-5xl py-4 md:py-6">
+        <SectionEyebrow reveal>Our belief</SectionEyebrow>
         <p className="font-headline text-2xl font-black uppercase leading-tight tracking-tight text-neutral-900 md:text-4xl">
-          {beliefText.split(" ").map((word, idx) => (
-            <span
-              key={`${word}-${idx}`}
-              data-belief-word="true"
-              className="mr-[0.35em] inline-block"
-            >
-              {word}
-            </span>
-          ))}
+          {beliefChars}
         </p>
       </div>
     </section>
