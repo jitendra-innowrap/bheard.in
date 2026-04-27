@@ -40,7 +40,7 @@ export async function updateStoryBySlug(slug: string, input: StoryUpdateInput) {
   return prisma.successStory.update({ where: { slug }, data: input });
 }
 
-export async function updateStoryById(id: number, input: StoryUpdateInput) {
+export async function updateStoryById(id: string, input: StoryUpdateInput) {
   requireDb();
   return prisma.successStory.update({ where: { id }, data: input });
 }

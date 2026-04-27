@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Moon, Sun, UserCircle2 } from "lucide-react";
+import { UserCircle2 } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useTheme } from "next-themes";
 import { Button } from "@/components/admin/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -19,8 +18,6 @@ const links = [
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
-
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
     router.replace("/admin/login");
@@ -62,14 +59,6 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           <div className="flex h-16 items-center justify-between px-4 lg:px-8">
             <p className="font-headline text-lg font-bold uppercase tracking-tight">Admin Console</p>
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
                   <Button variant="outline" size="sm" className="gap-2">

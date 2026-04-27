@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller } from "react-hook-form";
 import { Input } from "@/components/admin/ui/input";
 import { Textarea } from "@/components/admin/ui/textarea";
-import { Select } from "@/components/admin/ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/admin/ui/select";
 import { FormField } from "@/components/admin/ui/form-field";
 import { Button } from "@/components/admin/ui/button";
 
@@ -83,11 +84,22 @@ export default function CareerForm({
           <Input {...form.register("department")} />
         </FormField>
         <FormField label="Type" error={form.formState.errors.type?.message}>
-          <Select {...form.register("type")}>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Contract">Contract</option>
-          </Select>
+          <Controller
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Full-time">Full-time</SelectItem>
+                  <SelectItem value="Part-time">Part-time</SelectItem>
+                  <SelectItem value="Contract">Contract</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
         </FormField>
         <FormField label="Location" error={form.formState.errors.location?.message}>
           <Input {...form.register("location")} className="md:col-span-2" />

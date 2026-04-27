@@ -2,7 +2,7 @@
 
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/admin/ui/input";
-import { Select } from "@/components/admin/ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/admin/ui/select";
 import { Button } from "@/components/admin/ui/button";
 
 export type FilterOption = { label: string; value: string };
@@ -43,31 +43,52 @@ export function FilterBar({
         <Input value={search} onChange={(e) => onSearchChange(e.target.value)} className="pl-9" placeholder="Search..." />
       </div>
       {statusOptions && onStatusChange ? (
-        <Select value={status} onChange={(e) => onStatusChange(e.target.value)} className="md:col-span-2">
-          {statusOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Select>
+        <div className="md:col-span-2">
+          <Select value={status} onValueChange={onStatusChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              {statusOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       ) : null}
       {categoryOptions && onCategoryChange ? (
-        <Select value={category} onChange={(e) => onCategoryChange(e.target.value)} className="md:col-span-2">
-          {categoryOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Select>
+        <div className="md:col-span-2">
+          <Select value={category} onValueChange={onCategoryChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categoryOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       ) : null}
       {sortOptions && onSortChange ? (
-        <Select value={sort} onChange={(e) => onSortChange(e.target.value)} className="md:col-span-2">
-          {sortOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Select>
+        <div className="md:col-span-2">
+          <Select value={sort} onValueChange={onSortChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Sort" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       ) : null}
       <div className="md:col-span-2">
         <Button variant="outline" className="w-full" onClick={onReset}>

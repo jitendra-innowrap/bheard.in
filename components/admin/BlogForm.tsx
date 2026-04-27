@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller } from "react-hook-form";
 import { Input } from "@/components/admin/ui/input";
 import { Textarea } from "@/components/admin/ui/textarea";
-import { Select } from "@/components/admin/ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/admin/ui/select";
 import { FormField } from "@/components/admin/ui/form-field";
 import { Button } from "@/components/admin/ui/button";
 
@@ -87,12 +88,23 @@ export default function BlogForm({
           <Input {...form.register("slug")} disabled={mode === "edit"} />
         </FormField>
         <FormField label="Category" error={form.formState.errors.category?.message}>
-          <Select {...form.register("category")}>
-            <option value="Brand Strategy">Brand Strategy</option>
-            <option value="Product Engineering">Product Engineering</option>
-            <option value="AI Product">AI Product</option>
-            <option value="Content Systems">Content Systems</option>
-          </Select>
+          <Controller
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Brand Strategy">Brand Strategy</SelectItem>
+                  <SelectItem value="Product Engineering">Product Engineering</SelectItem>
+                  <SelectItem value="AI Product">AI Product</SelectItem>
+                  <SelectItem value="Content Systems">Content Systems</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
         </FormField>
         <FormField label="Read Time (minutes)" error={form.formState.errors.readTime?.message}>
           <Input type="number" min={1} max={60} {...form.register("readTime", { valueAsNumber: true })} />
