@@ -35,7 +35,7 @@ export async function getBlogPostBySlug(slug: string) {
   return prisma.blogPost.findUnique({ where: { slug } });
 }
 
-export async function getBlogPostById(id: number) {
+export async function getBlogPostById(id: string) {
   requireDb();
   return prisma.blogPost.findUnique({ where: { id } });
 }
@@ -76,7 +76,7 @@ export async function updateBlogPostBySlug(slug: string, input: BlogPostUpdateIn
   });
 }
 
-export async function updateBlogPostById(id: number, input: BlogPostUpdateInput) {
+export async function updateBlogPostById(id: string, input: BlogPostUpdateInput) {
   requireDb();
   const data: Prisma.BlogPostUpdateInput = { ...input };
   if (input.publishedAt) {
@@ -99,7 +99,7 @@ export async function deleteBlogPostBySlug(slug: string) {
   return prisma.blogPost.delete({ where: { slug } });
 }
 
-export async function deleteBlogPostById(id: number) {
+export async function deleteBlogPostById(id: string) {
   requireDb();
   return prisma.blogPost.delete({ where: { id } });
 }

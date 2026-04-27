@@ -1,19 +1,29 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/admin/ui/input";
+import { Textarea } from "@/components/admin/ui/textarea";
+import { Select } from "@/components/admin/ui/select";
+import { FormField } from "@/components/admin/ui/form-field";
+import { Button } from "@/components/admin/ui/button";
 
-type BlogFormModel = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  category: string;
-  readTime: number;
-  content: string;
-  published: boolean;
-  publishedAt?: string | null;
-};
+const blogFormSchema = z.object({
+  slug: z.string().min(3, "Slug is required"),
+  title: z.string().min(5, "Title is required"),
+  excerpt: z.string().min(20, "Excerpt must be at least 20 characters"),
+  category: z.string().min(2, "Category is required"),
+  readTime: z.number().min(1).max(60),
+  content: z.string().min(60, "Content is too short"),
+  published: z.boolean(),
+  publishedAt: z.string().nullable(),
+});
+
+type BlogFormModel = z.infer<typeof blogFormSchema>;
 
 export default function BlogForm({
   initial,
@@ -22,24 +32,25 @@ export default function BlogForm({
   initial?: BlogFormModel;
   mode: "create" | "edit";
 }) {
-  const [model, setModel] = useState<BlogFormModel>(
-    initial ?? {
-      slug: "",
-      title: "",
-      excerpt: "",
-      category: "",
-      readTime: 6,
-      content: "",
-      published: false,
-      publishedAt: null,
-    }
-  );
+  const form = useForm<BlogFormModel>({
+    resolver: zodResolver(blogFormSchema),
+    defaultValues:
+      initial ?? {
+        slug: "",
+        title: "",
+        excerpt: "",
+        category: "Brand Strategy",
+        readTime: 6,
+        content: "",
+        published: false,
+        publishedAt: null,
+      },
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
+  const submit = form.handleSubmit(async (model) => {
     setSaving(true);
     setError(null);
 
@@ -64,87 +75,70 @@ export default function BlogForm({
 
     router.push("/admin/blog");
     router.refresh();
-  };
+  });
 
   return (
     <form onSubmit={submit} className="grid gap-5">
       <div className="grid gap-4 md:grid-cols-2">
-        <input
-          value={model.title}
-          onChange={(e) => setModel((s) => ({ ...s, title: e.target.value }))}
-          placeholder="Title"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-        />
-        <input
-          value={model.slug}
-          onChange={(e) => setModel((s) => ({ ...s, slug: e.target.value }))}
-          placeholder="Slug (kebab-case)"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-          disabled={mode === "edit"}
-        />
-        <input
-          value={model.category}
-          onChange={(e) => setModel((s) => ({ ...s, category: e.target.value }))}
-          placeholder="Category"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-        />
-        <input
-          type="number"
-          min={1}
-          max={60}
-          value={model.readTime}
-          onChange={(e) => setModel((s) => ({ ...s, readTime: Number(e.target.value) }))}
-          placeholder="Read time (min)"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-        />
+        <FormField label="Title" error={form.formState.errors.title?.message}>
+          <Input {...form.register("title")} />
+        </FormField>
+        <FormField label="Slug" error={form.formState.errors.slug?.message}>
+          <Input {...form.register("slug")} disabled={mode === "edit"} />
+        </FormField>
+        <FormField label="Category" error={form.formState.errors.category?.message}>
+          <Select {...form.register("category")}>
+            <option value="Brand Strategy">Brand Strategy</option>
+            <option value="Product Engineering">Product Engineering</option>
+            <option value="AI Product">AI Product</option>
+            <option value="Content Systems">Content Systems</option>
+          </Select>
+        </FormField>
+        <FormField label="Read Time (minutes)" error={form.formState.errors.readTime?.message}>
+          <Input type="number" min={1} max={60} {...form.register("readTime", { valueAsNumber: true })} />
+        </FormField>
       </div>
 
-      <textarea
-        value={model.excerpt}
-        onChange={(e) => setModel((s) => ({ ...s, excerpt: e.target.value }))}
-        placeholder="Excerpt"
-        rows={3}
-        className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-        required
-      />
+      <FormField label="Excerpt" error={form.formState.errors.excerpt?.message}>
+        <Textarea rows={3} {...form.register("excerpt")} />
+      </FormField>
 
       <div data-color-mode="dark">
         <MDEditor
-          value={model.content}
-          onChange={(value) => setModel((s) => ({ ...s, content: value ?? "" }))}
+          value={form.watch("content")}
+          onChange={(value) => form.setValue("content", value ?? "", { shouldValidate: true })}
           height={420}
         />
       </div>
+      {form.formState.errors.content?.message ? (
+        <p className="text-xs text-destructive">{form.formState.errors.content.message}</p>
+      ) : null}
 
       <div className="flex flex-wrap items-center gap-4">
-        <label className="inline-flex items-center gap-2 text-sm">
+        <label className="inline-flex items-center gap-2 text-sm text-foreground">
           <input
             type="checkbox"
-            checked={model.published}
-            onChange={(e) => setModel((s) => ({ ...s, published: e.target.checked }))}
+            checked={form.watch("published")}
+            onChange={(e) => form.setValue("published", e.target.checked)}
           />
           Published
         </label>
-        <input
+        <Input
           type="datetime-local"
-          value={model.publishedAt ? model.publishedAt.slice(0, 16) : ""}
-          onChange={(e) => setModel((s) => ({ ...s, publishedAt: e.target.value ? new Date(e.target.value).toISOString() : null }))}
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
+          value={form.watch("publishedAt") ? form.watch("publishedAt")?.slice(0, 16) : ""}
+          onChange={(e) => form.setValue("publishedAt", e.target.value ? new Date(e.target.value).toISOString() : null)}
+          className="w-auto"
         />
       </div>
 
-      {error ? <p className="text-sm text-error-container">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-      <button
+      <Button
         disabled={saving}
-        className="inline-flex items-center justify-center gap-2 bg-primary px-6 py-3 font-label text-sm font-bold uppercase tracking-[0.15em] text-on-primary disabled:opacity-60"
+        className="w-fit"
       >
         {saving ? "Saving..." : mode === "create" ? "Create post" : "Save changes"}
-      </button>
+      </Button>
     </form>
   );
 }

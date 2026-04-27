@@ -51,7 +51,7 @@ export default function ServicesVariantOne() {
         <SectionCharReveal
           as="div"
           layout="flow"
-          scrubEnd="+=150%"
+          scrubEnd="+=34%"
           className={sectionTitleMarginCompact}
           eyebrow="Proof of craft"
           title="Outcomes in the wild"

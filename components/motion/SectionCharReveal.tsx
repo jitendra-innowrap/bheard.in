@@ -77,7 +77,7 @@ export default function SectionCharReveal({
   titleAs = "h2",
   className = "",
   innerClassName = "",
-  scrubEnd = "+=130%",
+  scrubEnd = "+=34%",
   trailing,
   descriptionClassName,
 }: SectionCharRevealProps) {
@@ -133,7 +133,7 @@ export default function SectionCharReveal({
               trigger: root,
               start: "top 82%" as const,
               end: scrubEnd,
-              scrub: 0.65,
+              scrub: 0.42,
             };
 
       const charTween: gsap.TweenVars = {

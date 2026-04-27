@@ -164,7 +164,7 @@ export default function WorkSection() {
       <SectionCharReveal
         as="div"
         layout="flow"
-        scrubEnd="+=120%"
+        scrubEnd="+=32%"
         titleVariant="display"
         className={`mx-auto flex max-w-7xl flex-col items-end justify-between gap-8 md:flex-row ${sectionTitleMarginDisplay}`}
         title={"Selected\nworks"}

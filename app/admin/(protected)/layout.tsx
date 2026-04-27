@@ -1,4 +1,5 @@
-import AdminNav from "@/components/admin/AdminNav";
+import AdminProviders from "@/components/admin/AdminProviders";
+import AdminShell from "@/components/admin/AdminShell";
 import { requireAdminAuth } from "@/lib/auth/adminSession";
 
 export default async function AdminProtectedLayout({
@@ -9,11 +10,8 @@ export default async function AdminProtectedLayout({
   await requireAdminAuth();
 
   return (
-    <main className="min-h-screen bg-surface-dim text-inverse-on-surface">
-      <div className="grid min-h-screen md:grid-cols-[260px_1fr]">
-        <AdminNav />
-        <section className="p-6 md:p-10">{children}</section>
-      </div>
-    </main>
+    <AdminProviders>
+      <AdminShell>{children}</AdminShell>
+    </AdminProviders>
   );
 }

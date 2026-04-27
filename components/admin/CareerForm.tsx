@@ -1,17 +1,27 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/admin/ui/input";
+import { Textarea } from "@/components/admin/ui/textarea";
+import { Select } from "@/components/admin/ui/select";
+import { FormField } from "@/components/admin/ui/form-field";
+import { Button } from "@/components/admin/ui/button";
 
-type CareerFormModel = {
-  slug: string;
-  title: string;
-  department: string;
-  type: string;
-  location: string;
-  description: string;
-  active: boolean;
-};
+const careerFormSchema = z.object({
+  slug: z.string().min(3, "Slug is required"),
+  title: z.string().min(4, "Title is required"),
+  department: z.string().min(2, "Department is required"),
+  type: z.string().min(2, "Type is required"),
+  location: z.string().min(2, "Location is required"),
+  description: z.string().min(120, "Description must be at least 120 characters"),
+  active: z.boolean(),
+});
+
+type CareerFormModel = z.infer<typeof careerFormSchema>;
 
 export default function CareerForm({
   initial,
@@ -20,23 +30,24 @@ export default function CareerForm({
   initial?: CareerFormModel;
   mode: "create" | "edit";
 }) {
-  const [model, setModel] = useState<CareerFormModel>(
-    initial ?? {
-      slug: "",
-      title: "",
-      department: "",
-      type: "Full-time",
-      location: "Remote",
-      description: "",
-      active: true,
-    }
-  );
+  const form = useForm<CareerFormModel>({
+    resolver: zodResolver(careerFormSchema),
+    defaultValues:
+      initial ?? {
+        slug: "",
+        title: "",
+        department: "",
+        type: "Full-time",
+        location: "Remote",
+        description: "",
+        active: true,
+      },
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
+  const submit = form.handleSubmit(async (model) => {
     setSaving(true);
     setError(null);
 
@@ -57,75 +68,53 @@ export default function CareerForm({
 
     router.push("/admin/careers");
     router.refresh();
-  };
+  });
 
   return (
     <form onSubmit={submit} className="grid gap-5">
       <div className="grid gap-4 md:grid-cols-2">
-        <input
-          value={model.title}
-          onChange={(e) => setModel((s) => ({ ...s, title: e.target.value }))}
-          placeholder="Role title"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-        />
-        <input
-          value={model.slug}
-          onChange={(e) => setModel((s) => ({ ...s, slug: e.target.value }))}
-          placeholder="Slug"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-          disabled={mode === "edit"}
-        />
-        <input
-          value={model.department}
-          onChange={(e) => setModel((s) => ({ ...s, department: e.target.value }))}
-          placeholder="Department"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-        />
-        <input
-          value={model.type}
-          onChange={(e) => setModel((s) => ({ ...s, type: e.target.value }))}
-          placeholder="Type"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary"
-          required
-        />
-        <input
-          value={model.location}
-          onChange={(e) => setModel((s) => ({ ...s, location: e.target.value }))}
-          placeholder="Location"
-          className="border-b border-outline-variant bg-transparent px-2 py-3 outline-none focus:border-primary md:col-span-2"
-          required
-        />
+        <FormField label="Role title" error={form.formState.errors.title?.message}>
+          <Input {...form.register("title")} />
+        </FormField>
+        <FormField label="Slug" error={form.formState.errors.slug?.message}>
+          <Input {...form.register("slug")} disabled={mode === "edit"} />
+        </FormField>
+        <FormField label="Department" error={form.formState.errors.department?.message}>
+          <Input {...form.register("department")} />
+        </FormField>
+        <FormField label="Type" error={form.formState.errors.type?.message}>
+          <Select {...form.register("type")}>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+          </Select>
+        </FormField>
+        <FormField label="Location" error={form.formState.errors.location?.message}>
+          <Input {...form.register("location")} className="md:col-span-2" />
+        </FormField>
       </div>
 
-      <textarea
-        value={model.description}
-        onChange={(e) => setModel((s) => ({ ...s, description: e.target.value }))}
-        placeholder="Role description (markdown/plain text)"
-        rows={14}
-        className="border border-outline-variant bg-transparent px-3 py-3 outline-none focus:border-primary"
-        required
-      />
+      <FormField label="Role description" error={form.formState.errors.description?.message}>
+        <Textarea rows={14} {...form.register("description")} />
+      </FormField>
 
-      <label className="inline-flex items-center gap-2 text-sm">
+      <label className="inline-flex items-center gap-2 text-sm text-foreground">
         <input
           type="checkbox"
-          checked={model.active}
-          onChange={(e) => setModel((s) => ({ ...s, active: e.target.checked }))}
+          checked={form.watch("active")}
+          onChange={(e) => form.setValue("active", e.target.checked)}
         />
         Active
       </label>
 
-      {error ? <p className="text-sm text-error-container">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-      <button
+      <Button
         disabled={saving}
-        className="inline-flex items-center justify-center gap-2 bg-primary px-6 py-3 font-label text-sm font-bold uppercase tracking-[0.15em] text-on-primary disabled:opacity-60"
+        className="w-fit"
       >
         {saving ? "Saving..." : mode === "create" ? "Create role" : "Save changes"}
-      </button>
+      </Button>
     </form>
   );
 }

@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: 30 33% 97%;
+    --foreground: 224 71% 4%;
+    --primary: 27 100% 62%;
+    --primary-foreground: 26 100% 15%;
+    --muted: 210 20% 95%;
+    --muted-foreground: 215 16% 36%;
+    --accent: 30 90% 95%;
+    --accent-foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --border: 220 13% 86%;
+    --input: 220 13% 86%;
+    --ring: 27 100% 62%;
+    --destructive: 9 85% 56%;
+    --success: 152 56% 36%;
+    --warning: 35 93% 50%;
+    --info: 212 89% 53%;
+  }
+
+  .dark {
+    --background: 224 39% 10%;
+    --foreground: 210 40% 98%;
+    --primary: 27 100% 62%;
+    --primary-foreground: 26 100% 15%;
+    --muted: 217 24% 17%;
+    --muted-foreground: 215 20% 70%;
+    --accent: 222 47% 17%;
+    --accent-foreground: 210 40% 98%;
+    --card: 224 32% 14%;
+    --card-foreground: 210 40% 98%;
+    --popover: 224 32% 14%;
+    --popover-foreground: 210 40% 98%;
+    --border: 217 24% 24%;
+    --input: 217 24% 24%;
+    --ring: 27 100% 62%;
+    --destructive: 10 80% 56%;
+    --success: 152 56% 42%;
+    --warning: 35 93% 56%;
+    --info: 212 89% 62%;
+  }
+}
+
 body {
   @apply bg-surface text-on-background;
   overflow-x: hidden;

@@ -4,6 +4,7 @@ import "@/lib/motion/config";
 import { useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ArrowDown } from "lucide-react";
 
 gsap.registerPlugin(useGSAP);
 
@@ -103,25 +104,45 @@ export default function HeroSection() {
         ease: "power2.out",
       });
 
-      gsap.to('[data-anim="hero-orb"]', {
-        x: 120,
-        y: -80,
-        scale: 1.03,
-        duration: 7.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "power2.out",
-      });
+      const section = heroRef.current;
+      if (!section) return;
 
-      gsap.to('[data-anim="hero-orb-inner"]', {
-        x: -60,
-        y: 50,
-        scale: 1.04,
-        duration: 5.8,
-        repeat: -1,
-        yoyo: true,
-        ease: "power2.out",
-      });
+      const orb = section.querySelector<HTMLElement>('[data-anim="hero-orb"]');
+      const orbInner = section.querySelector<HTMLElement>('[data-anim="hero-orb-inner"]');
+      if (!orb || !orbInner) return;
+
+      // Fixed slow speed: always smooth and calm, regardless of target element layering.
+      const orbXTo = gsap.quickTo(orb, "x", { duration: 0.7, ease: "power2.out" });
+      const orbYTo = gsap.quickTo(orb, "y", { duration: 0.7, ease: "power2.out" });
+      const innerXTo = gsap.quickTo(orbInner, "x", { duration: 0.75, ease: "power2.out" });
+      const innerYTo = gsap.quickTo(orbInner, "y", { duration: 0.75, ease: "power2.out" });
+
+      const onPointerMove = (e: PointerEvent) => {
+        const rect = section.getBoundingClientRect();
+        const nx = (e.clientX - rect.left) / rect.width - 0.5;
+        const ny = (e.clientY - rect.top) / rect.height - 0.5;
+        orbXTo(nx * 120);
+        orbYTo(ny * 86);
+        innerXTo(nx * 64);
+        innerYTo(ny * 46);
+      };
+
+      const onLeave = () => {
+        orbXTo(0);
+        orbYTo(0);
+        innerXTo(0);
+        innerYTo(0);
+      };
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerleave", onLeave);
+      window.addEventListener("pointercancel", onLeave);
+
+      return () => {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerleave", onLeave);
+        window.removeEventListener("pointercancel", onLeave);
+      };
     },
     { scope: heroRef }
   );
@@ -181,9 +202,7 @@ export default function HeroSection() {
             className="pointer-events-auto flex translate-y-[60px] cursor-pointer items-center gap-4 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100 group"
           >
             <div className="flex h-12 w-12 items-center justify-center rounded-full border border-outline-variant transition-all group-hover:border-primary group-hover:bg-primary">
-              <span className="material-symbols-outlined text-neutral-900">
-                arrow_downward
-              </span>
+              <ArrowDown className="h-5 w-5 text-neutral-900" />
             </div>
             <span className="font-headline font-bold uppercase tracking-tighter text-neutral-900">
               Discover our kinetic engine

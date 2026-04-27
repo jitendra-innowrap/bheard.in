@@ -32,7 +32,7 @@ export async function getCareerBySlug(slug: string) {
   return prisma.career.findUnique({ where: { slug } });
 }
 
-export async function getCareerById(id: number) {
+export async function getCareerById(id: string) {
   requireDb();
   return prisma.career.findUnique({ where: { id } });
 }
@@ -52,7 +52,7 @@ export async function updateCareerBySlug(slug: string, input: CareerUpdateInput)
   });
 }
 
-export async function updateCareerById(id: number, input: CareerUpdateInput) {
+export async function updateCareerById(id: string, input: CareerUpdateInput) {
   requireDb();
   return prisma.career.update({
     where: { id },
@@ -65,7 +65,7 @@ export async function deleteCareerBySlug(slug: string) {
   return prisma.career.delete({ where: { slug } });
 }
 
-export async function deleteCareerById(id: number) {
+export async function deleteCareerById(id: string) {
   requireDb();
   return prisma.career.delete({ where: { id } });
 }

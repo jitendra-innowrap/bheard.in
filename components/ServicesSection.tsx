@@ -173,7 +173,7 @@ export default function ServicesSection() {
       <SectionCharReveal
         as="div"
         layout="flow"
-        scrubEnd="+=150%"
+        scrubEnd="+=34%"
         className={`mx-auto max-w-7xl ${sectionTitleMarginCompact} lg:mb-14`}
         eyebrow="How we work"
         title="Our services"

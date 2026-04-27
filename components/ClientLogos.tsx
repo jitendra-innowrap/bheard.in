@@ -128,7 +128,7 @@ export default function ClientLogos() {
       <SectionCharReveal
         as="div"
         layout="flow"
-        scrubEnd="+=140%"
+        scrubEnd="+=34%"
         className={`mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-end ${sectionTitleMarginCompact}`}
         eyebrow="In good company"
         title="Our clients"

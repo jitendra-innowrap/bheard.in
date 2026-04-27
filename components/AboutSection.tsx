@@ -17,7 +17,7 @@ export default function AboutSection() {
                 <SectionCharReveal
                   as="div"
                   layout="flow"
-                  scrubEnd="+=110%"
+                  scrubEnd="+=30%"
                   titleVariant="display"
                   title={"About\nBheard."}
                 />
