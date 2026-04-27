@@ -37,7 +37,10 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </div>
         <nav className="mt-6 grid gap-1">
           {links.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const active =
+              item.href === "/admin"
+                ? pathname === "/admin"
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}

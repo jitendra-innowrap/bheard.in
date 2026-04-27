@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -51,6 +51,20 @@ export default function BlogForm({
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const title = form.watch("title");
+  useEffect(() => {
+    if (mode === "create") {
+      const slug = title
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+      form.setValue("slug", slug, { shouldValidate: slug.length >= 3 });
+    }
+  }, [title, mode, form]);
+
   const submit = form.handleSubmit(async (model) => {
     setSaving(true);
     setError(null);
@@ -85,7 +99,12 @@ export default function BlogForm({
           <Input {...form.register("title")} />
         </FormField>
         <FormField label="Slug" error={form.formState.errors.slug?.message}>
-          <Input {...form.register("slug")} disabled={mode === "edit"} />
+          <Input
+            {...form.register("slug")}
+            readOnly={mode === "create"}
+            disabled={mode === "edit"}
+            className={mode === "create" ? "bg-muted text-muted-foreground" : ""}
+          />
         </FormField>
         <FormField label="Category" error={form.formState.errors.category?.message}>
           <Controller
@@ -115,7 +134,7 @@ export default function BlogForm({
         <Textarea rows={3} {...form.register("excerpt")} />
       </FormField>
 
-      <div data-color-mode="dark">
+      <div data-color-mode="light">
         <MDEditor
           value={form.watch("content")}
           onChange={(value) => form.setValue("content", value ?? "", { shouldValidate: true })}
