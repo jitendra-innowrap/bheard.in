@@ -12,7 +12,6 @@ const links = [
   { href: "/admin/blog", label: "Blogs" },
   { href: "/admin/careers", label: "Careers" },
   { href: "/admin/success-stories", label: "Success Stories" },
-  { href: "/admin/media", label: "Media" },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

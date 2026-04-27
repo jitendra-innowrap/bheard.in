@@ -55,7 +55,7 @@ export default function AdminLoginPage() {
           <CardHeader>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Authorized Access</p>
             <CardTitle>Admin Login</CardTitle>
-            <CardDescription>Sign in to manage blogs, careers, stories, and media.</CardDescription>
+            <CardDescription>Sign in to manage blogs, careers, and stories.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={submit} className="grid gap-4">
