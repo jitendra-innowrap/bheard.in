@@ -255,7 +255,7 @@ export default function ServicesSection() {
                 clipPath:
                   "polygon(var(--split, 50%) 0, 100% 0, 100% 100%, calc(var(--split, 50%) - 10%) 100%)",
               }}
-              className="absolute inset-y-0 left-0 z-10 w-full overflow-hidden bg-gradient-to-br from-[#3d1e00] via-[#4a2508] to-[#2d1600]"
+              className="absolute inset-y-0 left-0 z-10 w-full overflow-hidden bg-gradient-to-br from-[#e59253] via-[#e58a45] to-[#eebd8e]"
             >
               <div ref={techContentRef} className="ml-auto min-w-[500px] max-w-[760px] p-10">
                 <PaneBlock
