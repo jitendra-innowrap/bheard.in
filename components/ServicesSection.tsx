@@ -5,6 +5,7 @@ import { CSSProperties, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { ArrowRight } from "lucide-react";
 import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import {
   sectionPageX,
@@ -35,30 +36,54 @@ function PaneBlock({
   title,
   description,
   services,
+  variant = "brand",
 }: {
   title: string;
   description: string;
   services: string[];
+  variant?: "brand" | "tech";
 }) {
+  const isTech = variant === "tech";
   return (
     <>
       <h4
         data-pane-reveal
-        className="font-headline text-4xl font-black uppercase text-neutral-900"
+        className={`font-headline text-4xl font-black uppercase ${isTech ? "text-white" : "text-neutral-900"}`}
       >
         {title}
       </h4>
-      <p data-pane-reveal className="mt-4 max-w-lg text-on-surface-variant">
+      <p
+        data-pane-reveal
+        className={`mt-4 max-w-lg ${isTech ? "text-white/70" : "text-on-surface-variant"}`}
+      >
         {description}
       </p>
-      <ul className="mt-8 space-y-3">
-        {services.map((service) => (
+      <ul className="mt-8 space-y-2">
+        {services.map((service, i) => (
           <li
             key={service}
             data-pane-reveal
-            className="border border-outline-variant/60 bg-surface px-4 py-3 text-sm font-semibold text-neutral-900 md:text-base"
+            className={`group flex items-center gap-4 rounded-sm px-4 py-3.5 text-sm font-semibold transition-all duration-300 md:text-base ${
+              isTech
+                ? "border border-white/10 bg-white/5 text-white hover:border-white/25 hover:bg-white/10"
+                : "border border-outline-variant/60 bg-surface text-neutral-900 hover:border-primary/40 hover:bg-primary/5"
+            }`}
           >
-            {service}
+            <span
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-xs font-black transition-colors duration-300 ${
+                isTech
+                  ? "bg-white/10 text-white group-hover:bg-white/20"
+                  : "bg-primary/10 text-primary group-hover:bg-primary/20"
+              }`}
+            >
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="flex-1">{service}</span>
+            <ArrowRight
+              className={`h-4 w-4 -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 ${
+                isTech ? "text-white/60" : "text-primary"
+              }`}
+            />
           </li>
         ))}
       </ul>
@@ -192,13 +217,15 @@ export default function ServicesSection() {
                 title="Brand Solutions"
                 description="Story, content, and campaign systems that build trust and long-term recall."
                 services={brandServices}
+                variant="brand"
               />
             </div>
-            <div className="p-8">
+            <div className="bg-gradient-to-br from-[#3d1e00] via-[#4a2508] to-[#2d1600] p-8">
               <PaneBlock
                 title="Tech Solutions"
                 description="Scalable digital products and automations engineered for measurable growth."
                 services={techServices}
+                variant="tech"
               />
             </div>
           </div>
@@ -217,6 +244,7 @@ export default function ServicesSection() {
                   title="Brand Solutions"
                   description="Story, content, and campaign systems that build trust and long-term recall."
                   services={brandServices}
+                  variant="brand"
                 />
               </div>
             </div>
@@ -227,13 +255,14 @@ export default function ServicesSection() {
                 clipPath:
                   "polygon(var(--split, 50%) 0, 100% 0, 100% 100%, calc(var(--split, 50%) - 10%) 100%)",
               }}
-              className="absolute inset-y-0 left-0 z-10 w-full overflow-hidden bg-surface-container-high"
+              className="absolute inset-y-0 left-0 z-10 w-full overflow-hidden bg-gradient-to-br from-[#3d1e00] via-[#4a2508] to-[#2d1600]"
             >
               <div ref={techContentRef} className="ml-auto min-w-[500px] max-w-[760px] p-10">
                 <PaneBlock
                   title="Tech Solutions"
                   description="Scalable digital products and automations engineered for measurable growth."
                   services={techServices}
+                  variant="tech"
                 />
               </div>
             </div>

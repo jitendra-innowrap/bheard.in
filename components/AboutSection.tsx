@@ -41,9 +41,9 @@ export default function AboutSection() {
             <div className="mt-12 overflow-hidden rounded-lg">
               <div className="relative w-full aspect-[16/10]">
                 <Image
-                  alt="AI Visualization"
+                  alt="Bheard team collaborating on brand strategy"
                   className="w-full grayscale hover:grayscale-0 transition-all duration-700 hover:scale-105 object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx0ZmWXK4ejCb5FNLjkqZ92PbbxCcaTrot15dBMVDczLUNwAgKQIIVgAXKW102hkwwgeXyrAWQv4RTws6j7HSWQozGU3SdHHKzUQ7eMUinsn4wR6RU7RtzkD-kXQrBbnLqPLpWTiKqs2h7o5cL1HqxC8U5FHpTNCTo2Epq99-hDHzHE43gE-T88BE2_-EHmqNIiSXMSBsnDdqESBG3RX1b3O_t8DNUYW3NMj-XAzHzBT132_dmLCSw3kax7asoSo3jkplR5aKOVKA"
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                 />
