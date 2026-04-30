@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import { Input } from "@/components/admin/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/admin/ui/select";
 import { Button } from "@/components/admin/ui/button";
@@ -20,6 +20,7 @@ type FilterBarProps = {
   onSortChange?: (value: string) => void;
   sortOptions?: FilterOption[];
   onReset: () => void;
+  showReset?: boolean;
 };
 
 export function FilterBar({
@@ -35,6 +36,7 @@ export function FilterBar({
   onSortChange,
   sortOptions,
   onReset,
+  showReset = false,
 }: FilterBarProps) {
   return (
     <div className="grid gap-3 rounded-md border border-border bg-card p-4 md:grid-cols-12">
@@ -90,11 +92,13 @@ export function FilterBar({
           </Select>
         </div>
       ) : null}
-      <div className="md:col-span-2">
-        <Button variant="outline" className="w-full" onClick={onReset}>
-          <X className="h-4 w-4" /> Reset
-        </Button>
-      </div>
+      {showReset ? (
+        <div className="md:col-span-2">
+          <Button variant="outline" className="w-full" onClick={onReset} aria-label="Clear filters">
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

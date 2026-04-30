@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { seedBlogPosts } from "@/lib/content/blogSeed";
 import { seedCareers } from "@/lib/content/careersSeed";
 import { seedStories } from "@/lib/content/storiesSeed";
+import { seedPages } from "@/lib/content/pagesSeed";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,11 @@ async function main() {
       where: { slug: post.slug },
       update: {
         title: post.title,
+        subtitle: (post as any).subtitle ?? null,
+        author: (post as any).author ?? "BHeard Editorial",
         excerpt: post.excerpt,
+        thumbnailUrl: (post as any).thumbnailUrl ?? null,
+        thumbnailAlt: (post as any).thumbnailAlt ?? null,
         content: post.content,
         category: post.category,
         readTime: post.readTime,
@@ -21,7 +26,11 @@ async function main() {
       create: {
         slug: post.slug,
         title: post.title,
+        subtitle: (post as any).subtitle ?? null,
+        author: (post as any).author ?? "BHeard Editorial",
         excerpt: post.excerpt,
+        thumbnailUrl: (post as any).thumbnailUrl ?? null,
+        thumbnailAlt: (post as any).thumbnailAlt ?? null,
         content: post.content,
         category: post.category,
         readTime: post.readTime,
@@ -60,6 +69,9 @@ async function main() {
       update: {
         title: story.title,
         industry: story.industry,
+        listImage: (story as any).listImage ?? null,
+        heroImage: (story as any).heroImage ?? null,
+        caseData: (story as any).caseData ?? null,
         summary: story.summary,
         about: story.about,
         challenge: story.challenge,
@@ -72,6 +84,9 @@ async function main() {
         slug: story.slug,
         title: story.title,
         industry: story.industry,
+        listImage: (story as any).listImage ?? null,
+        heroImage: (story as any).heroImage ?? null,
+        caseData: (story as any).caseData ?? null,
         summary: story.summary,
         about: story.about,
         challenge: story.challenge,
@@ -79,6 +94,21 @@ async function main() {
         results: story.results,
         contactCta: story.contactCta,
         published: story.published,
+      },
+    });
+  }
+
+  for (const page of seedPages) {
+    await prisma.page.upsert({
+      where: { slug: page.slug },
+      update: {
+        title: page.title,
+        content: page.content,
+      },
+      create: {
+        slug: page.slug,
+        title: page.title,
+        content: page.content,
       },
     });
   }

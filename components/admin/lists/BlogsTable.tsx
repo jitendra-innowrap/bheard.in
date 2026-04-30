@@ -94,12 +94,14 @@ export default function BlogsTable({ rows }: { rows: BlogItem[] }) {
           setSort("updated-desc");
           setPage(1);
         }}
+        showReset={Boolean(search || status !== "all" || category !== "all" || sort !== "updated-desc")}
       />
 
       <div className={tableStyles.wrapper}>
         <table className={tableStyles.table}>
           <thead>
             <tr className={tableStyles.headRow}>
+              <th className={tableStyles.headCell}>Serial</th>
               <th className={tableStyles.headCell}>Title</th>
               <th className={tableStyles.headCell}>Category</th>
               <th className={tableStyles.headCell}>Status</th>
@@ -109,8 +111,9 @@ export default function BlogsTable({ rows }: { rows: BlogItem[] }) {
           </thead>
           <tbody>
             {paged.length ? (
-              paged.map((post) => (
+              paged.map((post, idx) => (
                 <tr key={post.id} className={tableStyles.row}>
+                  <td className={tableStyles.cell}>{(safePage - 1) * pageSize + idx + 1}</td>
                   <td className={tableStyles.cell}>
                     <Link href={`/admin/blog/${post.id}`} className="font-medium hover:underline">
                       {post.title}
@@ -128,7 +131,7 @@ export default function BlogsTable({ rows }: { rows: BlogItem[] }) {
               ))
             ) : (
               <tr>
-                <td className="px-4 py-10 text-center text-muted-foreground" colSpan={5}>
+                <td className="px-4 py-10 text-center text-muted-foreground" colSpan={6}>
                   No blog posts found for current filters.
                 </td>
               </tr>

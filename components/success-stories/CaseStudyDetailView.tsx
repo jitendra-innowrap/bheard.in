@@ -5,17 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import type { CaseStudyContent } from "@/lib/case-studies";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import { sectionPageX } from "@/components/system/sectionTheme";
-import {
-  initHeadingLetterScrub,
-  parallaxScroll,
-  prefersReducedMotion,
-  scrollScrub,
-} from "@/lib/motion/animations";
+import { parallaxScroll, prefersReducedMotion, scrollScrub } from "@/lib/motion/animations";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 function splitHeadingChars(text: string) {
   return text.split("").map((ch, i) => (
@@ -25,11 +22,9 @@ function splitHeadingChars(text: string) {
   ));
 }
 
-const strategyCardPattern =
-  "linear-gradient(90deg,rgba(17,24,39,0.06) 1px,transparent 1px),linear-gradient(rgba(17,24,39,0.05) 1px,transparent 1px)";
-
 export default function CaseStudyDetailView({ study }: { study: CaseStudyContent }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const storyFlowRef = useRef<HTMLDivElement | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
   const heroTitleRef = useRef<HTMLHeadingElement | null>(null);
   const heroSubRef = useRef<HTMLParagraphElement | null>(null);
@@ -124,34 +119,31 @@ export default function CaseStudyDetailView({ study }: { study: CaseStudyContent
   useGSAP(
     () => {
       const root = rootRef.current;
-      if (!root) return;
+      const storyFlow = storyFlowRef.current;
+      if (!root || !storyFlow || prefersReducedMotion()) return;
 
-      if (prefersReducedMotion()) {
-        return;
-      }
-
-      const rules = root.querySelectorAll<HTMLElement>("[data-motion-rule]");
-      rules.forEach((rule) => {
-        gsap.fromTo(
-          rule,
-          { scaleX: 0.06, opacity: 0 },
-          {
-            scaleX: 1,
-            opacity: 1,
-            ease: "none",
-            transformOrigin: "left center",
-            scrollTrigger: {
-              trigger: rule,
-              start: "top 92%",
-              end: "top 70%",
-              scrub: 1.05,
-            },
-          }
-        );
+      gsap.to(storyFlow, {
+        backgroundPosition: "50% 100%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: storyFlow,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+        },
       });
 
-      const headings = root.querySelectorAll<HTMLElement>("[data-block-heading]");
-      headings.forEach((h) => initHeadingLetterScrub(h));
+      const pinnedPanels = root.querySelectorAll<HTMLElement>("[data-story-panel]");
+      pinnedPanels.forEach((panel) => {
+        ScrollTrigger.create({
+          trigger: panel,
+          start: "top top",
+          end: "+=145%",
+          pin: true,
+          scrub: 0.65,
+          anticipatePin: 1,
+        });
+      });
 
       const blocks = root.querySelectorAll<HTMLElement>("[data-detail-block]");
       blocks.forEach((sec) => {
@@ -168,8 +160,16 @@ export default function CaseStudyDetailView({ study }: { study: CaseStudyContent
         });
       });
 
-      const execVisuals = root.querySelectorAll<HTMLElement>("[data-exec-visual]");
-      execVisuals.forEach((el) => parallaxScroll(el, -14));
+      root.querySelectorAll<HTMLElement>("[data-panel-copy]").forEach((el) => {
+        scrollScrub(el, {
+          trigger: el.closest("[data-story-panel]") ?? el,
+          start: "top 78%",
+          end: "top 32%",
+          scrub: 1,
+        });
+      });
+
+      root.querySelectorAll<HTMLElement>("[data-exec-visual]").forEach((el) => parallaxScroll(el, -14));
 
       const stats = root.querySelectorAll<HTMLElement>("[data-stat-card]");
       const resultsBand = root.querySelector<HTMLElement>("[data-results-band]");
@@ -202,16 +202,6 @@ export default function CaseStudyDetailView({ study }: { study: CaseStudyContent
         });
       }
 
-      const closing = root.querySelector<HTMLElement>("[data-closing-pull]");
-      if (closing) {
-        scrollScrub(closing, {
-          trigger: closing,
-          start: "top 88%",
-          end: "top 48%",
-          scrub: 1.1,
-        });
-      }
-
       const ctaBlock = root.querySelector<HTMLElement>("[data-cta-band]");
       const ctaTitle = root.querySelector<HTMLElement>("[data-cta-title]");
       const ctaBody = root.querySelector<HTMLElement>("[data-cta-body]");
@@ -221,285 +211,178 @@ export default function CaseStudyDetailView({ study }: { study: CaseStudyContent
       if (ctaBlock && ctaBody) {
         scrollScrub(ctaBody, { trigger: ctaBlock, start: "top 86%", end: "top 46%", scrub: 1.08 });
       }
-
-      const cleaners: (() => void)[] = [];
-      root.querySelectorAll<HTMLElement>("[data-exec-figure]").forEach((figure) => {
-        const layer = figure.querySelector<HTMLElement>("[data-exec-visual]");
-        if (!layer) return;
-        const xTo = gsap.quickTo(layer, "x", { duration: 0.34, ease: "power2.out" });
-        const yTo = gsap.quickTo(layer, "y", { duration: 0.34, ease: "power2.out" });
-        const onMove = (e: PointerEvent) => {
-          const r = figure.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5;
-          const py = (e.clientY - r.top) / r.height - 0.5;
-          xTo(px * 18);
-          yTo(py * 15);
-        };
-        const reset = () => {
-          xTo(0);
-          yTo(0);
-        };
-        figure.addEventListener("pointermove", onMove);
-        figure.addEventListener("pointerleave", reset);
-        figure.addEventListener("pointercancel", reset);
-        cleaners.push(() => {
-          figure.removeEventListener("pointermove", onMove);
-          figure.removeEventListener("pointerleave", reset);
-          figure.removeEventListener("pointercancel", reset);
-        });
-      });
-
-      return () => cleaners.forEach((fn) => fn());
     },
     { scope: rootRef, dependencies: [study.slug], revertOnUpdate: true }
   );
 
   const band = `mx-auto max-w-content-max ${sectionPageX}`;
+  const challengeDescription = `${study.challenge.intro}${
+    study.challenge.bullets?.length ? `\n${study.challenge.bullets.join(" • ")}` : ""
+  }`;
+  const strategyDescription = `${study.strategy.intro}${
+    study.strategy.bullets?.length ? `\n${study.strategy.bullets.join(" • ")}` : ""
+  }`;
 
   return (
     <div ref={rootRef} className="bg-surface text-on-background">
-      <header ref={heroRef} className="relative min-h-[85vh] w-full overflow-hidden bg-surface-dim md:min-h-[88vh]">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[18] opacity-[0.35] mix-blend-soft-light"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 18% 22%, rgba(255,255,255,0.12), transparent 42%), radial-gradient(circle at 88% 8%, rgba(255,146,62,0.18), transparent 38%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[19] opacity-[0.12]"
-          style={{
-            backgroundImage:
-              "linear-gradient(115deg, rgba(255,255,255,0.05) 1px, transparent 1px),linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
-            backgroundSize: "36px 36px",
-          }}
-        />
-        <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-t from-surface-dim/95 via-surface-dim/55 to-surface-dim/10 md:bg-gradient-to-r md:from-surface-dim/90 md:via-surface-dim/48 md:to-transparent" />
-        <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-tr from-primary/28 via-transparent to-tertiary-container/22 mix-blend-screen" />
-
-        <div ref={heroVisualRef} className="absolute inset-0 will-change-transform md:left-[36%]">
-          <div className="relative h-full w-full scale-[1.06] md:scale-[1.08]">
-            <Image
-              src={study.heroImage}
-              alt={study.heroImageAlt}
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 65vw"
-            />
-          </div>
-        </div>
-
-        <div className={`relative z-30 flex min-h-[85vh] flex-col justify-end gap-6 pb-14 pt-32 md:min-h-[88vh] md:pb-20 md:pt-40 ${band}`}>
-          <div className="max-w-3xl">
-            <h1
-              ref={heroTitleRef}
-              className="font-headline text-[clamp(2.5rem,7vw,5.5rem)] font-black uppercase leading-[0.92] tracking-tighter text-surface-bright drop-shadow-[0_2px_28px_rgba(0,0,0,0.35)]"
-            >
-              {splitHeadingChars(study.heroTitle)}
-            </h1>
-            <p
-              ref={heroSubRef}
-              className="mt-6 max-w-2xl font-body text-lg leading-relaxed text-neutral-200 md:text-xl"
-            >
-              {study.heroSubtitle}
-            </p>
-            <p
-              ref={heroMetaRef}
-              className="mt-4 font-label text-label-sm uppercase tracking-[0.22em] text-primary-fixed drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)]"
-            >
-              {study.heroMeta}
-            </p>
-          </div>
-        </div>
-      </header>
-
-      <section data-detail-block className={`${band} py-section-y-sm md:py-section-y-md`}>
-        <div
-          data-motion-rule
-          className="mb-10 h-px w-full max-w-2xl origin-left bg-inverse-surface/20 will-change-transform md:mb-12"
-        />
-        <h2 data-block-heading className="max-w-xl font-headline text-3xl font-black uppercase tracking-tight text-on-background md:text-4xl">
-          {study.overview.heading}
-        </h2>
-        <div data-block-body className="mt-8 max-w-3xl space-y-4">
-          <p className="font-body text-body-lg leading-relaxed text-on-surface-variant">{study.overview.body}</p>
-        </div>
-      </section>
-
-      <section
-        data-detail-block
-        className="border-y border-inverse-surface/10 bg-surface-container-low py-section-y-sm md:py-section-y-md"
+      <div
+        ref={storyFlowRef}
+        className="relative"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 8% 12%, rgba(255,255,255,0.36), transparent 40%), radial-gradient(circle at 92% 20%, rgba(255,146,62,0.12), transparent 38%), linear-gradient(180deg, #0f172a 0%, #1f2937 22%, #22303f 44%, #1e293b 62%, #15202e 78%, #111827 90%, #f8fafc 100%)",
+          backgroundSize: "100% 240%",
+          backgroundPosition: "50% 0%",
+        }}
       >
-        <div className={band}>
-          <div
-            data-motion-rule
-            className="mb-10 h-px w-full max-w-2xl origin-left bg-inverse-surface/20 will-change-transform md:mb-12"
-          />
-          <h2 data-block-heading className="max-w-xl font-headline text-3xl font-black uppercase tracking-tight md:text-4xl">
-            {study.challenge.heading}
-          </h2>
-          <div data-block-body className="mt-8 max-w-3xl space-y-5">
-            <p className="font-body text-body-lg leading-relaxed text-on-surface-variant">{study.challenge.intro}</p>
-            {study.challenge.bullets?.length ? (
-              <ul className="space-y-3 border-l-2 border-primary/80 pl-6 font-body text-body-lg leading-relaxed text-on-surface-variant">
-                {study.challenge.bullets.map((b) => (
-                  <li key={b}>{b}</li>
+        <header ref={heroRef} className="relative overflow-hidden py-28 md:py-32">
+          <div className={`relative z-20 grid items-center gap-10 ${band} md:grid-cols-[1.05fr_0.95fr] md:gap-14`}>
+            <div>
+              <p ref={heroMetaRef} className="font-label text-label-sm uppercase tracking-[0.22em] text-primary-fixed">
+                {study.heroMeta}
+              </p>
+              <h1
+                ref={heroTitleRef}
+                className="mt-4 font-headline text-[clamp(2.4rem,6.3vw,5rem)] font-black uppercase leading-[0.92] tracking-tighter text-surface-bright"
+              >
+                {splitHeadingChars(study.heroTitle)}
+              </h1>
+              <p ref={heroSubRef} className="mt-6 max-w-2xl font-body text-lg leading-relaxed text-neutral-200 md:text-xl">
+                {study.heroSubtitle}
+              </p>
+            </div>
+            <figure className="relative overflow-hidden rounded-[1.6rem] border border-white/10 shadow-[0_28px_90px_-45px_rgba(0,0,0,0.55)]">
+              <div ref={heroVisualRef} className="relative aspect-[4/3] will-change-transform">
+                <Image
+                  src={study.heroImage}
+                  alt={study.heroImageAlt}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 44vw"
+                />
+              </div>
+            </figure>
+          </div>
+        </header>
+
+        <SectionCharReveal
+          as="section"
+          layout="viewportPin"
+          titleVariant="compact"
+          eyebrow="The Belief"
+          title={study.overview.heading}
+          description={study.overview.body}
+          className={`${sectionPageX} flex min-h-[100dvh] flex-col justify-center py-14 md:py-20`}
+          innerClassName="mx-auto max-w-content-max"
+          descriptionClassName="mt-5 max-w-3xl font-body text-lg leading-relaxed text-neutral-100 md:text-xl"
+        />
+
+        <SectionCharReveal
+          as="section"
+          layout="viewportPin"
+          titleVariant="compact"
+          eyebrow="The Challenge"
+          title={study.challenge.heading}
+          description={challengeDescription}
+          className={`${sectionPageX} flex min-h-[100dvh] flex-col justify-center py-14 md:py-20 [&_h2]:text-right [&_p]:ml-auto [&_p]:text-right`}
+          innerClassName="mx-auto max-w-content-max"
+          descriptionClassName="mt-5 max-w-3xl font-body text-lg leading-relaxed text-neutral-100 md:text-xl"
+        />
+
+        <SectionCharReveal
+          as="section"
+          layout="viewportPin"
+          titleVariant="compact"
+          eyebrow="Our Approach"
+          title={study.strategy.heading}
+          description={strategyDescription}
+          className={`${sectionPageX} flex min-h-[100dvh] flex-col justify-center py-14 md:py-20`}
+          innerClassName="mx-auto max-w-content-max"
+          descriptionClassName="mt-5 max-w-3xl font-body text-lg leading-relaxed text-neutral-100 md:text-xl"
+        />
+
+        <section data-story-panel className={`${sectionPageX} min-h-[100dvh] py-12 md:py-16`}>
+          <div className="mx-auto grid max-w-content-max items-center gap-10 rounded-3xl border border-white/15 bg-black/25 p-7 backdrop-blur-sm md:grid-cols-[1.05fr_0.95fr] md:gap-14 md:p-10">
+            <div data-panel-copy className="min-w-0">
+              <p className="font-label text-label-sm uppercase tracking-[0.2em] text-primary-fixed">Execution</p>
+              <h2 data-block-heading className="mt-4 font-headline text-4xl font-black uppercase tracking-tight text-white md:text-5xl">
+                How it came together
+              </h2>
+              <h3 className="mt-6 font-headline text-2xl font-bold uppercase tracking-tight text-white md:text-3xl">
+                {study.execution[0]?.heading ?? "Execution"}
+              </h3>
+              <div data-block-body className="mt-4 space-y-3">
+                <p className="font-body text-body-lg leading-relaxed text-neutral-100">
+                  {study.execution[0]?.body ?? study.strategy.intro}
+                </p>
+                {study.execution.length > 1 ? (
+                  <ul className="grid gap-2 pt-2 text-sm text-neutral-200 md:grid-cols-2">
+                    {study.execution.slice(1).map((item) => (
+                      <li key={item.heading} className="rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                        {item.heading}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            </div>
+            <figure data-exec-figure className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/15 shadow-[0_25px_90px_-40px_rgba(0,0,0,0.65)]">
+              <div data-exec-visual className="absolute inset-0 scale-110 will-change-transform">
+                <Image
+                  src={study.execution[0]?.image ?? study.heroImage}
+                  alt={study.execution[0]?.imageAlt ?? study.heroImageAlt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width:768px) 100vw, 44vw"
+                />
+              </div>
+            </figure>
+          </div>
+        </section>
+
+        <section data-story-panel data-results-band className={`${sectionPageX} min-h-[100dvh] py-12 md:py-16`}>
+          <div className="mx-auto grid max-w-content-max gap-8 rounded-3xl border border-white/15 bg-black/35 p-7 text-white backdrop-blur-sm md:grid-cols-[1.1fr_0.9fr] md:gap-10 md:p-10">
+            <div data-panel-copy>
+              <p className="font-label text-label-sm uppercase tracking-[0.2em] text-primary-fixed">Impact</p>
+              <h2 data-block-heading className="mt-4 font-headline text-4xl font-black uppercase tracking-tight md:text-5xl">
+                {study.results.heading || "Impact"}
+              </h2>
+              <p data-results-outro className="mt-5 max-w-2xl font-body text-body-lg leading-relaxed text-neutral-100">
+                {study.results.closing}
+              </p>
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                {study.results.stats.slice(0, 2).map((s) => (
+                  <div key={`highlight-${s.label}`} className="rounded-xl border border-white/20 bg-white/10 p-4">
+                    <p className="font-headline text-3xl font-bold text-primary-fixed">{s.value}</p>
+                    <p className="mt-1 text-sm text-neutral-100">{s.label}</p>
+                  </div>
                 ))}
-              </ul>
-            ) : null}
-          </div>
-        </div>
-      </section>
-
-      <section data-detail-block className={`${band} py-section-y-sm md:py-section-y-md`}>
-        <div
-          data-motion-rule
-          className="mb-10 h-px w-full max-w-2xl origin-left bg-inverse-surface/20 will-change-transform md:mb-12"
-        />
-        <h2 data-block-heading className="max-w-xl font-headline text-3xl font-black uppercase tracking-tight md:text-4xl">
-          {study.strategy.heading}
-        </h2>
-        <div data-block-body className="mt-8 max-w-3xl space-y-5">
-          <p className="font-body text-body-lg leading-relaxed text-on-surface-variant">{study.strategy.intro}</p>
-          {study.strategy.bullets?.length ? (
-            <ul className="grid gap-4 md:grid-cols-3">
-              {study.strategy.bullets.map((b) => (
-                <li
-                  key={b}
-                  className="group relative overflow-hidden rounded-xl border border-inverse-surface/10 bg-surface-container-lowest p-5 font-body text-sm leading-relaxed text-on-surface-variant shadow-[0_18px_50px_-38px_rgba(17,24,39,0.35)] transition-transform duration-300 will-change-transform hover:-translate-y-1 md:text-base"
-                  style={{ backgroundImage: strategyCardPattern, backgroundSize: "22px 22px" }}
+              </div>
+            </div>
+            <div className="grid gap-4 md:auto-rows-fr">
+              {study.results.stats.map((s) => (
+                <div
+                  key={s.label}
+                  data-stat-card
+                  className="flex items-center justify-between rounded-xl border border-white/20 bg-white/10 px-5 py-4"
                 >
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-x-5 top-3 h-px origin-left scale-x-0 bg-inverse-surface/25 transition-transform duration-500 group-hover:scale-x-100"
-                  />
-                  <span className="relative">{b}</span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      </section>
-
-      <section data-detail-block className="bg-surface-container-low py-section-y-sm md:py-section-y-md">
-        <div className={`${band} mb-12 md:mb-16`}>
-          <div
-            data-motion-rule
-            className="mb-8 h-px w-full max-w-3xl origin-left bg-inverse-surface/20 will-change-transform md:mb-10"
-          />
-          <p className="mb-3 font-label text-label-sm uppercase tracking-[0.2em] text-primary">Execution</p>
-          <h2 data-block-heading className="max-w-3xl font-headline text-3xl font-black uppercase tracking-tight md:text-5xl">
-            How it came together
-          </h2>
-        </div>
-        <div className="flex flex-col gap-20 md:gap-28">
-          {study.execution.map((block) => {
-            const reverse = block.align === "right";
-            return (
-              <div
-                key={block.heading}
-                data-detail-block
-                className={`${band} grid items-center gap-10 md:grid-cols-2 md:gap-16`}
-              >
-                <div className={reverse ? "md:order-2" : ""}>
-                  <h3
-                    data-block-heading
-                    className="font-headline text-2xl font-bold uppercase tracking-tight text-on-background md:text-3xl"
-                  >
-                    {block.heading}
-                  </h3>
-                  <div data-block-body className="mt-5">
-                    <p className="font-body text-body-lg leading-relaxed text-on-surface-variant">{block.body}</p>
-                  </div>
+                  <p className="font-body text-sm text-neutral-100 md:text-base">{s.label}</p>
+                  <p className="font-headline text-2xl font-black text-primary-fixed md:text-3xl">{s.value}</p>
                 </div>
-                <figure
-                  data-exec-figure
-                  className={`relative aspect-[4/3] cursor-default overflow-hidden rounded-[1.5rem] border border-inverse-surface/10 bg-inverse-surface shadow-lg transition-transform duration-300 will-change-transform hover:-translate-y-1 ${
-                    reverse ? "md:order-1" : ""
-                  }`}
-                >
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 z-10 opacity-[0.16] mix-blend-soft-light"
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(120deg, rgba(255,255,255,0.12) 1px, transparent 1px),linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px)",
-                      backgroundSize: "26px 26px",
-                    }}
-                  />
-                  <div data-exec-visual className="absolute inset-0 scale-110 will-change-transform">
-                    <Image
-                      src={block.image}
-                      alt={block.imageAlt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width:768px) 100vw, 45vw"
-                    />
-                  </div>
-                </figure>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      <section
-        data-detail-block
-        data-results-band
-        className="bg-inverse-surface py-section-y-sm text-inverse-on-surface md:py-section-y"
-      >
-        <div className={band}>
-          <div
-            data-motion-rule
-            className="mb-10 h-px w-full max-w-2xl origin-left bg-white/25 will-change-transform md:mb-12"
-          />
-          <h2 data-block-heading className="max-w-2xl font-headline text-3xl font-black uppercase tracking-tight text-surface-bright md:text-4xl">
-            {study.results.heading}
-          </h2>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {study.results.stats.map((s) => (
-              <div
-                key={s.label}
-                data-stat-card
-                className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-transform duration-300 will-change-transform hover:-translate-y-1"
-              >
-                <p className="font-headline text-4xl font-bold tabular-nums text-primary-fixed md:text-5xl">{s.value}</p>
-                <p className="mt-3 font-body text-sm leading-relaxed text-white/75 md:text-base">{s.label}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          <p
-            data-results-outro
-            className="mt-12 max-w-3xl font-body text-body-lg leading-relaxed text-neutral-200"
-          >
-            {study.results.closing}
-          </p>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <section data-detail-block className={`${band} py-section-y-sm md:py-section-y-md`}>
-        <blockquote
-          data-closing-pull
-          className="max-w-4xl font-headline text-2xl font-bold uppercase leading-snug tracking-tight text-on-background md:text-3xl"
-        >
-          {study.closingStatement}
-        </blockquote>
-      </section>
-
-      <section
-        data-detail-block
-        data-cta-band
-        className="border-t border-inverse-surface/10 bg-surface-container-low py-section-y-sm md:py-section-y-md"
-      >
-        <div className={`${band} flex flex-col items-start justify-between gap-10 md:flex-row md:items-center`}>
+      <section data-detail-block data-cta-band className="bg-surface py-10 md:py-12">
+        <div className={`${band} flex flex-col items-start justify-between gap-8 md:flex-row md:items-center`}>
           <div>
             <h2 data-cta-title className="font-headline text-3xl font-black uppercase tracking-tight md:text-4xl">
               {study.cta.title}
             </h2>
-            <p data-cta-body className="mt-4 max-w-xl font-body text-body-lg text-on-surface-variant">
+            <p data-cta-body className="mt-3 max-w-xl font-body text-body-lg text-on-surface-variant">
               {study.cta.subtext}
             </p>
           </div>

@@ -3,20 +3,28 @@
 import { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller } from "react-hook-form";
 import { Input } from "@/components/admin/ui/input";
 import { Textarea } from "@/components/admin/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/admin/ui/select";
+import { Switch } from "@/components/admin/ui/switch";
+import { DatePicker } from "@/components/admin/ui/date-picker";
 import { FormField } from "@/components/admin/ui/form-field";
 import { Button } from "@/components/admin/ui/button";
 
 const blogFormSchema = z.object({
   slug: z.string().min(3, "Slug is required"),
   title: z.string().min(5, "Title is required"),
+  subtitle: z.string().default(""),
+  showAuthorDetails: z.boolean().default(true),
+  author: z.string().default(""),
+  authorImage: z.string().default(""),
   excerpt: z.string().min(20, "Excerpt must be at least 20 characters"),
+  thumbnailUrl: z.string().default(""),
+  thumbnailAlt: z.string().default(""),
   category: z.string().min(2, "Category is required"),
   readTime: z.number().min(1).max(60),
   content: z.string().min(60, "Content is too short"),
@@ -34,12 +42,17 @@ export default function BlogForm({
   mode: "create" | "edit";
 }) {
   const form = useForm<BlogFormModel>({
-    resolver: zodResolver(blogFormSchema),
     defaultValues:
       initial ?? {
         slug: "",
         title: "",
+        subtitle: "",
+        showAuthorDetails: true,
+        author: "BHeard Editorial",
+        authorImage: "",
         excerpt: "",
+        thumbnailUrl: "",
+        thumbnailAlt: "",
         category: "Brand Strategy",
         readTime: 6,
         content: "",
@@ -48,10 +61,13 @@ export default function BlogForm({
       },
   });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const title = form.watch("title");
+  const thumbnailPreview = form.watch("thumbnailUrl");
+  const showAuthorDetails = form.watch("showAuthorDetails");
   useEffect(() => {
     if (mode === "create") {
       const slug = title
@@ -68,6 +84,17 @@ export default function BlogForm({
   const submit = form.handleSubmit(async (model) => {
     setSaving(true);
     setError(null);
+    const parsed = blogFormSchema.safeParse(model);
+    if (!parsed.success) {
+      parsed.error.issues.forEach((issue) => {
+        const key = issue.path[0];
+        if (typeof key === "string") {
+          form.setError(key as keyof BlogFormModel, { type: "manual", message: issue.message });
+        }
+      });
+      setSaving(false);
+      return;
+    }
 
     const url = mode === "create" ? "/api/blog" : `/api/blog/${initial?.slug}`;
     const method = mode === "create" ? "POST" : "PUT";
@@ -76,8 +103,13 @@ export default function BlogForm({
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        ...model,
-        publishedAt: model.publishedAt || null,
+        ...parsed.data,
+        subtitle: parsed.data.subtitle || "",
+        author: parsed.data.showAuthorDetails ? parsed.data.author || "" : "",
+        authorImage: parsed.data.showAuthorDetails ? parsed.data.authorImage || "" : "",
+        thumbnailUrl: parsed.data.thumbnailUrl || "",
+        thumbnailAlt: parsed.data.thumbnailAlt || "",
+        publishedAt: parsed.data.publishedAt || null,
       }),
     });
 
@@ -106,6 +138,9 @@ export default function BlogForm({
             className={mode === "create" ? "bg-muted text-muted-foreground" : ""}
           />
         </FormField>
+        <FormField label="Subtitle">
+          <Input {...form.register("subtitle")} />
+        </FormField>
         <FormField label="Category" error={form.formState.errors.category?.message}>
           <Controller
             control={form.control}
@@ -129,6 +164,83 @@ export default function BlogForm({
           <Input type="number" min={1} max={60} {...form.register("readTime", { valueAsNumber: true })} />
         </FormField>
       </div>
+      <div className="rounded-md border border-border p-4">
+        <label className="inline-flex items-center gap-2 text-sm text-foreground">
+          <Switch
+            checked={showAuthorDetails}
+            onCheckedChange={(checked: boolean) => form.setValue("showAuthorDetails", checked, { shouldDirty: true })}
+          />
+          <span>Show Author Details</span>
+        </label>
+      </div>
+      {showAuthorDetails ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField label="Author Name" error={form.formState.errors.author?.message}>
+            <Input {...form.register("author")} placeholder="e.g. BHeard Editorial" />
+          </FormField>
+          <FormField label="Author Image URL">
+            <Input {...form.register("authorImage")} placeholder="https://..." />
+          </FormField>
+        </div>
+      ) : null}
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <FormField label="Thumbnail URL">
+          <Input {...form.register("thumbnailUrl")} placeholder="https://..." />
+        </FormField>
+        <FormField label="Thumbnail Alt">
+          <Input {...form.register("thumbnailAlt")} placeholder="Describe thumbnail image" />
+        </FormField>
+      </div>
+
+      <div className="rounded-md border border-border p-4">
+        <p className="mb-3 text-sm font-medium">Upload thumbnail (ImageKit)</p>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            setUploading(true);
+            setError(null);
+            try {
+              const fd = new FormData();
+              fd.set("image", file);
+              const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+              const body = await res.json().catch(() => null);
+              if (!res.ok || !body?.url) {
+                setError(body?.error?.message ?? "Image upload failed");
+                return;
+              }
+              form.setValue("thumbnailUrl", body.url, { shouldDirty: true });
+              if (!form.getValues("thumbnailAlt")) {
+                form.setValue("thumbnailAlt", file.name.replace(/\.[^.]+$/, ""), { shouldDirty: true });
+              }
+            } catch {
+              setError("Image upload failed");
+            } finally {
+              setUploading(false);
+              e.currentTarget.value = "";
+            }
+          }}
+          disabled={uploading}
+        />
+        {uploading ? <p className="mt-2 text-xs text-muted-foreground">Uploading...</p> : null}
+      </div>
+      {thumbnailPreview ? (
+        <div className="rounded-md border border-border bg-card p-4">
+          <p className="mb-3 text-sm font-medium">Thumbnail preview</p>
+          <div className="relative aspect-[16/9] w-full max-w-[420px] overflow-hidden rounded-md border border-border">
+            <Image
+              src={thumbnailPreview}
+              alt={form.watch("thumbnailAlt") || form.watch("title") || "Blog thumbnail preview"}
+              fill
+              className="object-cover"
+              sizes="420px"
+            />
+          </div>
+        </div>
+      ) : null}
 
       <FormField label="Excerpt" error={form.formState.errors.excerpt?.message}>
         <Textarea rows={3} {...form.register("excerpt")} />
@@ -147,19 +259,10 @@ export default function BlogForm({
 
       <div className="flex flex-wrap items-center gap-4">
         <label className="inline-flex items-center gap-2 text-sm text-foreground">
-          <input
-            type="checkbox"
-            checked={form.watch("published")}
-            onChange={(e) => form.setValue("published", e.target.checked)}
-          />
-          Published
+          <Switch checked={form.watch("published")} onCheckedChange={(checked: boolean) => form.setValue("published", checked)} />
+          <span>Published</span>
         </label>
-        <Input
-          type="datetime-local"
-          value={form.watch("publishedAt") ? form.watch("publishedAt")?.slice(0, 16) : ""}
-          onChange={(e) => form.setValue("publishedAt", e.target.value ? new Date(e.target.value).toISOString() : null)}
-          className="w-auto"
-        />
+        <DatePicker value={form.watch("publishedAt")} onChange={(next) => form.setValue("publishedAt", next)} />
       </div>
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}

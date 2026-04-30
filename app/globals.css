@@ -82,6 +82,24 @@ body {
   font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
 }
 
+.prose {
+  --tw-prose-body: #374151;
+  --tw-prose-headings: #111827;
+  --tw-prose-links: #ff923e;
+  --tw-prose-bold: #111827;
+  --tw-prose-counters: #6b7280;
+  --tw-prose-bullets: #ff923e;
+  --tw-prose-quotes: #111827;
+  --tw-prose-quote-borders: #ff923e;
+  --tw-prose-code: #111827;
+}
+.prose :where(h1, h2, h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  font-family: var(--font-space-grotesk);
+}
+.prose :where(p, li, blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  font-family: var(--font-manrope);
+}
+
 .img-editorial {
   filter: grayscale(100%) contrast(1.1);
 }

@@ -17,6 +17,10 @@ function createSessionValue(email: string) {
   return `${payload}|${sign(payload)}`;
 }
 
+export function createAdminSessionValue(email: string) {
+  return createSessionValue(email);
+}
+
 function verifySession(value: string) {
   const parts = value.split("|");
   if (parts.length < 3) return false;
@@ -28,6 +32,11 @@ function verifySession(value: string) {
   const b = Buffer.from(expected, "utf8");
   if (a.length !== b.length) return false;
   return timingSafeEqual(a, b);
+}
+
+export function isValidAdminSessionValue(value: string | undefined) {
+  if (!value) return false;
+  return verifySession(value);
 }
 
 export async function isAdminAuthenticated() {

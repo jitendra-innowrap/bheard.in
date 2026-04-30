@@ -4,11 +4,11 @@ import "@/lib/motion/config";
 import Image from "next/image";
 import { useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "@/lib/motion/animations";
+import { usePinnedStack } from "@/lib/motion/pinnedStack";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 export type ServicePinItem = {
   id: string;
@@ -21,9 +21,10 @@ export type ServicePinItem = {
   imageAlt?: string;
 };
 
-const RUNWAY_VH = 128;
-const OVERLAP_VH = 68;
 const LIFT_PX = 18;
+const CARD_TOP_REM = 5.75;
+const CARD_BOTTOM_REM = 6.25;
+const SCROLL_PER_CARD_PCT = 55;
 
 function ServiceCardVisual({ item }: { item: ServicePinItem }) {
   if (item.visual) {
@@ -48,42 +49,19 @@ function ServiceCardVisual({ item }: { item: ServicePinItem }) {
 }
 
 function ServicePinCard({ item, index }: { item: ServicePinItem; index: number }) {
-  const wrapRef = useRef<HTMLDivElement | null>(null);
   const cardRef = useRef<HTMLElement | null>(null);
 
   const lift = index * LIFT_PX;
-  const topOffset = `calc(5.75rem + ${lift}px)`;
-  const cardHeight = `calc(100dvh - 6.25rem - ${lift}px)`;
+  const topOffset = `calc(${CARD_TOP_REM}rem + ${lift}px)`;
+  const cardHeight = `calc(100dvh - ${CARD_BOTTOM_REM}rem - ${lift}px)`;
   const hasVisualColumn = Boolean(item.visual ?? item.imageSrc);
 
   useGSAP(
     () => {
-      const wrap = wrapRef.current;
       const card = cardRef.current;
-      if (!wrap || !card || prefersReducedMotion()) return;
+      if (!card || prefersReducedMotion()) return;
 
       const inner = card.querySelector<HTMLElement>("[data-pin-scale]");
-      const reveals = card.querySelectorAll<HTMLElement>("[data-pin-reveal]");
-
-      if (reveals.length) {
-        gsap.fromTo(
-          reveals,
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            stagger: 0.035,
-            ease: "none",
-            scrollTrigger: {
-              trigger: wrap,
-              start: "top 82%",
-              end: "top 38%",
-              scrub: 1.2,
-              invalidateOnRefresh: true,
-            },
-          }
-        );
-      }
 
       if (inner) {
         gsap.fromTo(
@@ -93,7 +71,7 @@ function ServicePinCard({ item, index }: { item: ServicePinItem; index: number }
             scale: 0.985,
             ease: "none",
             scrollTrigger: {
-              trigger: wrap,
+              trigger: card,
               start: "top 28%",
               end: "bottom top",
               scrub: 1.15,
@@ -103,64 +81,58 @@ function ServicePinCard({ item, index }: { item: ServicePinItem; index: number }
         );
       }
     },
-    { scope: wrapRef, revertOnUpdate: true }
+    { scope: cardRef, revertOnUpdate: true }
   );
 
   return (
-    <div
-      ref={wrapRef}
-      className={`relative w-full min-h-[calc(100dvh+${RUNWAY_VH}vh)] ${
-        index > 0 ? `-mt-[min(${OVERLAP_VH}vh,760px)]` : ""
-      }`}
-      style={{ zIndex: 10 + index * 10 }}
+    <article
+      ref={cardRef}
+      data-stack-card
+      className="group absolute left-0 flex w-full flex-col overflow-hidden rounded-[1.75rem] border border-inverse-surface/10 bg-surface-container-lowest shadow-[0_28px_90px_-48px_rgba(17,24,39,0.35)] transition-[box-shadow,border-color] duration-300 will-change-transform hover:border-primary/25 hover:shadow-[0_34px_110px_-44px_rgba(17,24,39,0.42)] md:rounded-[2rem]"
+      style={{
+        top: topOffset,
+        minHeight: "min(80dvh, 480px)",
+        height: cardHeight,
+        zIndex: 10 + index * 10,
+      }}
     >
-      <article
-        ref={cardRef}
-        className="group sticky flex w-full max-w-content-max flex-col overflow-hidden rounded-[1.75rem] border border-inverse-surface/10 bg-surface-container-lowest shadow-[0_28px_90px_-48px_rgba(17,24,39,0.35)] transition-[box-shadow,border-color] duration-300 will-change-transform hover:border-primary/25 hover:shadow-[0_34px_110px_-44px_rgba(17,24,39,0.42)] md:rounded-[2rem]"
-        style={{
-          top: topOffset,
-          height: cardHeight,
-          zIndex: 10 + index * 10,
-        }}
-      >
-        <div data-pin-scale className="flex h-full min-h-0 origin-top flex-col will-change-transform">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-[0.5]"
-            style={{
-              backgroundImage:
-                "linear-gradient(120deg, rgba(17,24,39,0.04) 1px, transparent 1px),linear-gradient(rgba(17,24,39,0.035) 1px, transparent 1px)",
-              backgroundSize: "26px 26px",
-            }}
-          />
-          <div
-            className={`relative z-10 grid flex-1 gap-8 p-8 md:gap-12 md:p-12 lg:p-14 ${
-              hasVisualColumn ? "md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]" : "md:grid-cols-1"
-            }`}
-          >
-            <div className="flex min-h-0 flex-col justify-center">
-              <h3
-                data-pin-reveal
-                className="font-headline text-[clamp(1.65rem,3.6vw,2.75rem)] font-black uppercase leading-tight tracking-tight text-on-background"
-              >
-                {item.title}
-              </h3>
-              <p
-                data-pin-reveal
-                className="mt-5 max-w-xl font-body text-body-lg leading-relaxed text-on-surface-variant md:text-lg"
-              >
-                {item.body}
-              </p>
-            </div>
-            {hasVisualColumn ? (
-              <div data-pin-reveal className="relative min-h-[220px] md:min-h-0">
-                <ServiceCardVisual item={item} />
-              </div>
-            ) : null}
+      <div data-pin-scale className="flex h-full min-h-0 origin-top flex-col overflow-y-auto will-change-transform md:overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.5]"
+          style={{
+            backgroundImage:
+              "linear-gradient(120deg, rgba(17,24,39,0.04) 1px, transparent 1px),linear-gradient(rgba(17,24,39,0.035) 1px, transparent 1px)",
+            backgroundSize: "26px 26px",
+          }}
+        />
+        <div
+          className={`relative z-10 grid flex-1 gap-8 p-8 md:gap-12 md:p-12 lg:p-14 ${
+            hasVisualColumn ? "md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]" : "md:grid-cols-1"
+          }`}
+        >
+          <div className="flex min-h-0 flex-col justify-center">
+            <h3
+              data-stack-reveal
+              className="font-headline text-[clamp(1.65rem,3.6vw,2.75rem)] font-black uppercase leading-tight tracking-tight text-on-background"
+            >
+              {item.title}
+            </h3>
+            <p
+              data-stack-reveal
+              className="mt-5 max-w-xl font-body text-body-lg leading-relaxed text-on-surface-variant md:text-lg"
+            >
+              {item.body}
+            </p>
           </div>
+          {hasVisualColumn ? (
+            <div data-stack-reveal className="relative min-h-[220px] md:min-h-0">
+              <ServiceCardVisual item={item} />
+            </div>
+          ) : null}
         </div>
-      </article>
-    </div>
+      </div>
+    </article>
   );
 }
 
@@ -173,6 +145,9 @@ type ServicePinStackProps = {
 
 export default function ServicePinStack({ eyebrow, heading, intro, items }: ServicePinStackProps) {
   const headRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const pinRef = useRef<HTMLDivElement | null>(null);
+  const cardsWrapRef = useRef<HTMLDivElement | null>(null);
 
   useGSAP(
     () => {
@@ -199,10 +174,19 @@ export default function ServicePinStack({ eyebrow, heading, intro, items }: Serv
     },
     { scope: headRef, revertOnUpdate: true }
   );
-  
+
+  usePinnedStack({
+    scopeRef: sectionRef,
+    pinRef,
+    cardsWrapRef,
+    cardSelector: "[data-stack-card]",
+    revealSelector: "[data-stack-reveal]",
+    scrollPerCardPct: SCROLL_PER_CARD_PCT,
+    exitDuration: 2,
+  });
 
   return (
-    <section className="relative bg-surface pb-section-y-sm pt-4 md:pb-section-y md:pt-10">
+    <section ref={sectionRef} className="relative bg-surface pb-section-y-sm pt-4 md:pb-section-y md:pt-10">
       <div ref={headRef} className="mx-auto max-w-content-max px-gutter-sm md:px-gutter">
         <p
           data-stack-head
@@ -226,8 +210,8 @@ export default function ServicePinStack({ eyebrow, heading, intro, items }: Serv
         ) : null}
       </div>
 
-      <div className="mx-auto mt-14 max-w-content-max px-gutter-sm md:mt-20 md:px-gutter">
-        <div className="flex flex-col">
+      <div ref={pinRef} className="relative mt-14 h-dvh overflow-hidden md:mt-20">
+        <div ref={cardsWrapRef} className="relative mx-auto h-full max-w-content-max px-gutter-sm will-change-transform md:px-gutter">
           {items.map((item, index) => (
             <ServicePinCard key={item.id} item={item} index={index} />
           ))}

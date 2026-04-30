@@ -107,18 +107,18 @@ export default function Footer() {
       <div className="relative overflow-visible border-t border-outline-variant/10 pt-16">
         <div className="relative z-10 flex flex-col items-end justify-between gap-8 md:flex-row">
           <div className="text-sm font-bold uppercase tracking-widest text-neutral-600">
-            &copy; 2024 BHEARD. ALL RIGHTS RESERVED.
+            &copy; {new Date().getFullYear()} BHEARD. ALL RIGHTS RESERVED.
           </div>
           <div className="flex gap-8">
             <Link
               className="text-sm font-bold uppercase tracking-widest text-neutral-600 transition-colors duration-400 ease-out hover:text-neutral-900"
-              href="#"
+              href="/privacy-policy"
             >
               Privacy
             </Link>
             <Link
               className="text-sm font-bold uppercase tracking-widest text-neutral-600 transition-colors duration-400 ease-out hover:text-neutral-900"
-              href="#"
+              href="/terms-and-conditions"
             >
               Terms
             </Link>

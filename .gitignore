@@ -32,3 +32,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# candidate resumes (local / server uploads)
+/uploads/career-resumes/

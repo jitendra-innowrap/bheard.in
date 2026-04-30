@@ -80,11 +80,13 @@ export default function CareersTable({ rows }: { rows: CareerItem[] }) {
           setSort("updated-desc");
           setPage(1);
         }}
+        showReset={Boolean(search || status !== "all" || sort !== "updated-desc")}
       />
       <div className={tableStyles.wrapper}>
         <table className={tableStyles.table}>
           <thead>
             <tr className={tableStyles.headRow}>
+              <th className={tableStyles.headCell}>Serial</th>
               <th className={tableStyles.headCell}>Role</th>
               <th className={tableStyles.headCell}>Department</th>
               <th className={tableStyles.headCell}>Type / Location</th>
@@ -94,8 +96,9 @@ export default function CareersTable({ rows }: { rows: CareerItem[] }) {
           </thead>
           <tbody>
             {paged.length ? (
-              paged.map((role) => (
+              paged.map((role, idx) => (
                 <tr key={role.id} className={tableStyles.row}>
+                  <td className={tableStyles.cell}>{(safePage - 1) * pageSize + idx + 1}</td>
                   <td className={tableStyles.cell}>{role.title}</td>
                   <td className={tableStyles.cell}>{role.department}</td>
                   <td className={tableStyles.cell}>
@@ -109,7 +112,7 @@ export default function CareersTable({ rows }: { rows: CareerItem[] }) {
               ))
             ) : (
               <tr>
-                <td className="px-4 py-10 text-center text-muted-foreground" colSpan={5}>
+                <td className="px-4 py-10 text-center text-muted-foreground" colSpan={6}>
                   No roles found for current filters.
                 </td>
               </tr>

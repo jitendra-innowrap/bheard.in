@@ -48,7 +48,13 @@ export async function createBlogPost(input: BlogPostInput) {
     data: {
       slug: input.slug,
       title: input.title,
+      subtitle: input.subtitle || null,
+      showAuthorDetails: input.showAuthorDetails ?? true,
+      author: input.author || null,
+      authorImage: input.authorImage || null,
       excerpt: input.excerpt,
+      thumbnailUrl: input.thumbnailUrl || null,
+      thumbnailAlt: input.thumbnailAlt || null,
       content: input.content,
       category: input.category,
       readTime: input.readTime,
@@ -61,6 +67,11 @@ export async function createBlogPost(input: BlogPostInput) {
 export async function updateBlogPostBySlug(slug: string, input: BlogPostUpdateInput) {
   requireDb();
   const data: Prisma.BlogPostUpdateInput = { ...input };
+  if (typeof input.subtitle === "string") data.subtitle = input.subtitle || null;
+  if (typeof input.author === "string") data.author = input.author || null;
+  if (typeof input.authorImage === "string") data.authorImage = input.authorImage || null;
+  if (typeof input.thumbnailUrl === "string") data.thumbnailUrl = input.thumbnailUrl || null;
+  if (typeof input.thumbnailAlt === "string") data.thumbnailAlt = input.thumbnailAlt || null;
   if (input.publishedAt) {
     data.publishedAt = new Date(input.publishedAt);
   }
@@ -79,6 +90,11 @@ export async function updateBlogPostBySlug(slug: string, input: BlogPostUpdateIn
 export async function updateBlogPostById(id: string, input: BlogPostUpdateInput) {
   requireDb();
   const data: Prisma.BlogPostUpdateInput = { ...input };
+  if (typeof input.subtitle === "string") data.subtitle = input.subtitle || null;
+  if (typeof input.author === "string") data.author = input.author || null;
+  if (typeof input.authorImage === "string") data.authorImage = input.authorImage || null;
+  if (typeof input.thumbnailUrl === "string") data.thumbnailUrl = input.thumbnailUrl || null;
+  if (typeof input.thumbnailAlt === "string") data.thumbnailAlt = input.thumbnailAlt || null;
   if (input.publishedAt) {
     data.publishedAt = new Date(input.publishedAt);
   }

@@ -28,6 +28,14 @@ export default async function AdminStoryDetailPage({ params }: { params: Promise
               <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Industry</p>
               <p className="mt-1 font-medium">{row.industry}</p>
             </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">List image</p>
+              <p className="mt-1 break-all text-sm text-muted-foreground">{row.listImage || "—"}</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Hero image</p>
+              <p className="mt-1 break-all text-sm text-muted-foreground">{row.heroImage || "—"}</p>
+            </div>
           </div>
           <div>
             <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Summary</p>

@@ -21,7 +21,13 @@ export default async function AdminBlogEditPage({ params }: { params: Promise<Pa
             initial={{
               slug: row.slug,
               title: row.title,
+              subtitle: row.subtitle ?? "",
+              showAuthorDetails: row.showAuthorDetails ?? true,
+              author: row.author ?? "BHeard Editorial",
+              authorImage: row.authorImage ?? "",
               excerpt: row.excerpt,
+              thumbnailUrl: row.thumbnailUrl ?? "",
+              thumbnailAlt: row.thumbnailAlt ?? "",
               category: row.category,
               readTime: row.readTime,
               content: row.content,

@@ -1,0 +1,94 @@
+{
+  "created": {
+    "blogSlug": "qa-blog-1777540593612",
+    "storySlug": "qa-success-story-1777540593718",
+    "careerSlugUsed": "content-strategy-lead",
+    "applicationIds": [
+      "69f31df1c549bcb7330a198c",
+      "69f31df2c549bcb7330a198d",
+      "69f31df2c549bcb7330a198e",
+      "69f31df2c549bcb7330a198f",
+      "69f31df2c549bcb7330a1990",
+      "69f31df2c549bcb7330a1991",
+      "69f31df2c549bcb7330a1992",
+      "69f31df2c549bcb7330a1993"
+    ],
+    "uploadedImages": {
+      "blogImage": "https://ik.imagekit.io/f9swoxsck/bheard/blog/blog-thumb_eK28X5GeQ.jpg",
+      "storyListImage": "https://ik.imagekit.io/f9swoxsck/bheard/success-stories/list/story-list_oUMlL5xku.jpg",
+      "storyHeroImage": "https://ik.imagekit.io/f9swoxsck/bheard/success-stories/hero/story-hero_QP0iRqJSH.jpg",
+      "storyExecImage": "https://ik.imagekit.io/f9swoxsck/bheard/success-stories/execution/story-exec_EuFEt9K5P.jpg"
+    }
+  },
+  "verified": {
+    "storyApiStatus": 200,
+    "blogApiStatus": 200,
+    "storyListingFrontend": {
+      "status": 200,
+      "hasExpected": true
+    },
+    "storyDetailFrontend": {
+      "status": 200,
+      "hasExpected": true
+    },
+    "blogListingFrontend": {
+      "status": 200,
+      "hasExpected": true
+    },
+    "blogDetailFrontend": {
+      "status": 200,
+      "hasExpected": true
+    },
+    "adminApplicationsCount": 8,
+    "resumeChecks": [
+      {
+        "id": "69f31df1c549bcb7330a198c",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      },
+      {
+        "id": "69f31df2c549bcb7330a198d",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      },
+      {
+        "id": "69f31df2c549bcb7330a198e",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      },
+      {
+        "id": "69f31df2c549bcb7330a198f",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      },
+      {
+        "id": "69f31df2c549bcb7330a1990",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      },
+      {
+        "id": "69f31df2c549bcb7330a1991",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      },
+      {
+        "id": "69f31df2c549bcb7330a1992",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      },
+      {
+        "id": "69f31df2c549bcb7330a1993",
+        "detailStatus": 200,
+        "resumeStatus": 200,
+        "resumeContentType": "application/pdf"
+      }
+    ]
+  }
+}

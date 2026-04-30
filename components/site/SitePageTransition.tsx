@@ -10,7 +10,7 @@ import { prefersReducedMotion } from "@/lib/motion/animations";
 gsap.registerPlugin(useGSAP);
 
 export default function SitePageTransition({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   useGSAP(
@@ -19,6 +19,13 @@ export default function SitePageTransition({ children }: { children: React.React
       if (!el || prefersReducedMotion()) {
         return;
       }
+
+      // Long pages (markdown + tall apply form): vertical clip wipes can hide content incorrectly.
+      if (pathname === "/careers" || pathname.startsWith("/careers/")) {
+        gsap.set(el, { clipPath: "none", clearProps: "clipPath" });
+        return;
+      }
+
       gsap.fromTo(
         el,
         { clipPath: "inset(0 0 100% 0)" },

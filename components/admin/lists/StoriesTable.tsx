@@ -76,11 +76,13 @@ export default function StoriesTable({ rows }: { rows: StoryItem[] }) {
           setSort("updated-desc");
           setPage(1);
         }}
+        showReset={Boolean(search || status !== "all" || sort !== "updated-desc")}
       />
       <div className={tableStyles.wrapper}>
         <table className={tableStyles.table}>
           <thead>
             <tr className={tableStyles.headRow}>
+              <th className={tableStyles.headCell}>Serial</th>
               <th className={tableStyles.headCell}>Title</th>
               <th className={tableStyles.headCell}>Industry</th>
               <th className={tableStyles.headCell}>Status</th>
@@ -89,8 +91,9 @@ export default function StoriesTable({ rows }: { rows: StoryItem[] }) {
           </thead>
           <tbody>
             {paged.length ? (
-              paged.map((story) => (
+              paged.map((story, idx) => (
                 <tr key={story.id} className={tableStyles.row}>
+                  <td className={tableStyles.cell}>{(safePage - 1) * pageSize + idx + 1}</td>
                   <td className={tableStyles.cell}>{story.title}</td>
                   <td className={tableStyles.cell}>{story.industry}</td>
                   <td className={tableStyles.cell}>{story.published ? "Published" : "Draft"}</td>
@@ -101,7 +104,7 @@ export default function StoriesTable({ rows }: { rows: StoryItem[] }) {
               ))
             ) : (
               <tr>
-                <td className="px-4 py-10 text-center text-muted-foreground" colSpan={4}>
+                <td className="px-4 py-10 text-center text-muted-foreground" colSpan={5}>
                   No stories found for current filters.
                 </td>
               </tr>

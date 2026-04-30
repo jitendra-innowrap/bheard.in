@@ -7,6 +7,7 @@ import { sectionPageX, sectionStackTop } from "@/components/system/sectionTheme"
 export default function AboutSection() {
   return (
     <section
+      id="about"
       className={`bg-surface-container-lowest ${sectionPageX} ${sectionStackTop} pb-32 md:pb-52`}
     >
       <div className="max-w-7xl mx-auto">

@@ -1,6 +1,15 @@
+"use client";
+
+import "@/lib/motion/config";
 import Link from "next/link";
-import InnerPageHero from "@/components/system/InnerPageHero";
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { sectionPageX } from "@/components/system/sectionTheme";
+import { prefersReducedMotion } from "@/lib/motion/animations";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export type CareerListItem = {
   slug: string;
@@ -12,31 +21,90 @@ export type CareerListItem = {
 };
 
 export default function CareersListingView({ roles }: { roles: CareerListItem[] }) {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+
+      gsap.fromTo(
+        '[data-careers-banner="eyebrow"], [data-careers-banner="title"], [data-careers-banner="copy"]',
+        { opacity: 0, y: 36 },
+        { opacity: 1, y: 0, duration: 0.65, stagger: 0.08, ease: "power3.out" }
+      );
+
+      gsap.fromTo(
+        '[data-careers-summary]',
+        { opacity: 0, y: 34 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.62,
+          ease: "power3.out",
+          scrollTrigger: { trigger: '[data-careers-summary]', start: "top 86%", once: true },
+        }
+      );
+
+      gsap.fromTo(
+        '[data-career-row]',
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.06,
+          ease: "power2.out",
+          scrollTrigger: { trigger: '[data-careers-list]', start: "top 88%", once: true },
+        }
+      );
+    },
+    { scope: rootRef }
+  );
+
   return (
-    <>
-      <InnerPageHero
-        watermark="JOIN"
-        heading="We Hire People, Not Resumes"
-        subtext="We work with people who care about ownership, quality, and building meaningful outcomes."
-        theme="dark"
-      />
+    <div ref={rootRef}>
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 px-8 pb-20 pt-36 md:pb-24 md:pt-40">
+        <div className="pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-primary/20 blur-[120px]" />
+        <div className="pointer-events-none absolute -left-14 bottom-0 h-52 w-52 rounded-full bg-primary-fixed/20 blur-[100px]" />
+        <div className="mx-auto max-w-content-max">
+          <p data-careers-banner="eyebrow" className="font-label text-label-sm uppercase tracking-[0.2em] text-primary-fixed">
+            Join BHEARD
+          </p>
+          <h1
+            data-careers-banner="title"
+            className="mt-4 max-w-4xl font-headline text-[clamp(2.4rem,7vw,4.8rem)] font-black uppercase leading-[0.94] tracking-tight text-white"
+          >
+            We Hire People,
+            <br />
+            Not Resumes
+          </h1>
+          <p
+            data-careers-banner="copy"
+            className="mt-6 max-w-2xl font-body text-base leading-relaxed text-neutral-300 md:text-lg"
+          >
+            We work with builders who care about ownership, creative quality, and measurable outcomes.
+          </p>
+        </div>
+      </section>
 
       <section className={`bg-surface ${sectionPageX} py-section-y-sm md:py-section-y`}>
         <div className="mx-auto max-w-content-max">
-          <div className="max-w-4xl border-l-2 border-primary pl-5">
+          <div data-careers-summary className="max-w-4xl border-l-2 border-primary pl-5">
             <p className="font-headline text-[clamp(1.6rem,3vw,2.6rem)] font-bold leading-tight text-on-background">
               We work async when needed, move with ownership, and optimize for taste plus measurable impact—not process theater.
             </p>
           </div>
 
-          <div className="mt-14">
+          <div className="mt-14" data-careers-list>
             <p className="font-label text-label-sm uppercase tracking-[0.2em] text-primary">Open roles</p>
             <div className="mt-4 border-t border-outline-variant/60">
               {roles.length ? (
                 roles.map((role) => (
-                  <article
+                  <Link
                     key={role.slug}
-                    className="grid gap-4 border-b border-outline-variant/60 bg-surface py-6 transition-colors hover:bg-surface-tint/10 md:grid-cols-[1.2fr_1fr_auto] md:items-center"
+                    href={`/careers/${role.slug}`}
+                    data-career-row
+                    className="group grid gap-4 border-b border-outline-variant/60 bg-surface py-6 transition-colors hover:bg-surface-tint/10 md:grid-cols-[1.2fr_1fr_auto] md:items-center"
                   >
                     <div>
                       <h2 className="font-headline text-2xl font-black uppercase leading-tight text-on-background">
@@ -47,13 +115,10 @@ export default function CareersListingView({ roles }: { roles: CareerListItem[] 
                     <p className="font-body text-sm uppercase tracking-[0.14em] text-on-surface-variant">
                       {role.location} · {role.type}
                     </p>
-                    <Link
-                      href={`/careers/${role.slug}`}
-                      className="inline-flex items-center gap-2 font-label text-sm font-bold uppercase tracking-[0.16em] text-on-background"
-                    >
+                    <span className="inline-flex items-center gap-2 font-label text-sm font-bold uppercase tracking-[0.16em] text-on-background transition-transform group-hover:translate-x-0.5">
                       Apply <span aria-hidden>→</span>
-                    </Link>
-                  </article>
+                    </span>
+                  </Link>
                 ))
               ) : (
                 <div className="border-b border-outline-variant/60 py-8">
@@ -80,6 +145,6 @@ export default function CareersListingView({ roles }: { roles: CareerListItem[] 
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

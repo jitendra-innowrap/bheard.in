@@ -1,7 +1,11 @@
 export type SeedBlogPost = {
   slug: string;
   title: string;
+  subtitle?: string;
+  author: string;
   excerpt: string;
+  thumbnailUrl?: string;
+  thumbnailAlt?: string;
   content: string;
   category: string;
   readTime: number;
@@ -13,6 +17,7 @@ export const seedBlogPosts: SeedBlogPost[] = [
   {
     slug: "positioning-before-performance",
     title: "Positioning Before Performance: Why Growth Compounds Faster",
+    author: "BHeard Editorial",
     excerpt:
       "Teams often pour budget into channels before clarifying category position. Better positioning reduces CAC by making every click more qualified.",
     category: "Brand Strategy",
@@ -56,6 +61,7 @@ If not, fix positioning first, then scale media.
   {
     slug: "mobile-app-architecture-for-scale",
     title: "Mobile App Architecture for Scale: Decisions That Save Six Months Later",
+    author: "BHeard Editorial",
     excerpt:
       "Architecture choices made in week two often decide whether you can ship fast in month six. Here is a practical model for scaling safely.",
     category: "Product Engineering",
@@ -93,6 +99,7 @@ This keeps teams moving without accumulating invisible debt.
   {
     slug: "ai-features-users-actually-adopt",
     title: "AI Features Users Actually Adopt",
+    author: "BHeard Editorial",
     excerpt:
       "Most AI features fail because they are novel, not useful. Adoption grows when AI is embedded inside existing user intent.",
     category: "AI Product",
@@ -121,6 +128,7 @@ Build for trust first. Delight follows.
   {
     slug: "from-campaign-assets-to-content-systems",
     title: "From Campaign Assets to Content Systems",
+    author: "BHeard Editorial",
     excerpt:
       "High-performing teams stop treating content as one-off assets and start managing reusable narrative systems across channels.",
     category: "Content Systems",

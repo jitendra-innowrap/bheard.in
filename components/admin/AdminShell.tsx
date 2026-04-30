@@ -1,21 +1,35 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { UserCircle2 } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/admin/ui/button";
 import { cn } from "@/lib/utils";
+import logo from "@/app/logo.png";
 
 const links = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/blog", label: "Blogs" },
-  { href: "/admin/careers", label: "Careers" },
+  { href: "/admin/careers", label: "Career roles" },
+  { href: "/admin/careers/applications", label: "Applicants" },
+  { href: "/admin/crm/leads", label: "CRM Leads" },
   { href: "/admin/success-stories", label: "Success Stories" },
+  { href: "/admin/pages", label: "Pages" },
 ];
 
+function isNavActive(pathname: string, itemHref: string) {
+  if (itemHref === "/admin") return pathname === "/admin";
+  if (itemHref === "/admin/crm/leads") return pathname.startsWith("/admin/crm/leads");
+  if (itemHref === "/admin/careers/applications") return pathname.startsWith("/admin/careers/applications");
+  if (itemHref === "/admin/careers")
+    return pathname.startsWith("/admin/careers") && !pathname.startsWith("/admin/careers/applications");
+  return pathname === itemHref || pathname.startsWith(`${itemHref}/`);
+}
+
 export default function AdminShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const router = useRouter();
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -26,8 +40,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen bg-background text-foreground">
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 border-r border-border bg-card p-4 lg:block">
         <div className="flex items-center gap-3 rounded-md bg-primary/10 p-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <span className="font-headline text-sm font-black uppercase tracking-tight">BH</span>
+          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white">
+            <Image src={logo} alt="BHEARD" width={28} height={28} className="h-7 w-7 object-contain" />
           </div>
           <div>
             <p className="font-headline text-base font-black uppercase tracking-tight text-foreground">BHEARD</p>
@@ -36,10 +50,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </div>
         <nav className="mt-6 grid gap-1">
           {links.map((item) => {
-            const active =
-              item.href === "/admin"
-                ? pathname === "/admin"
-                : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const active = isNavActive(pathname, item.href);
             return (
               <Link
                 key={item.href}
@@ -56,8 +67,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </nav>
       </aside>
 
-      <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
+      <div className="min-h-screen bg-white lg:pl-64">
+        <header className="sticky top-0 z-30 border-b border-border bg-white/95 backdrop-blur">
           <div className="flex h-16 items-center justify-between px-4 lg:px-8">
             <p className="font-headline text-lg font-bold uppercase tracking-tight">Admin Console</p>
             <div className="flex items-center gap-2">

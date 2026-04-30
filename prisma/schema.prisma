@@ -11,7 +11,13 @@ model BlogPost {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   slug        String    @unique
   title       String
+  subtitle    String?
+  showAuthorDetails Boolean @default(true)
+  author      String?
+  authorImage String?
   excerpt     String
+  thumbnailUrl String?
+  thumbnailAlt String?
   content     String
   category    String
   readTime    Int
@@ -22,16 +28,51 @@ model BlogPost {
 }
 
 model Career {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  slug        String   @unique
-  title       String
-  department  String
-  type        String
-  location    String
-  description String
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
+  slug          String               @unique
+  title         String
+  department    String
+  type          String
+  location      String
+  description   String
+  active        Boolean              @default(true)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  applications  CareerApplication[]
+}
+
+model CareerApplication {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  careerId  String? @db.ObjectId
+  career    Career? @relation(fields: [careerId], references: [id], onDelete: SetNull)
+
+  careerSlug  String
+  careerTitle String
+
+  fullName          String
+  email             String
+  phone             String
+  city              String
+  yearsExperience   String
+  roleTitleApplied  String
+  currentCompany    String?
+  portfolioUrl      String?
+  linkedInUrl       String?
+  expectedSalary    String?
+  noticePeriod      String
+  coverLetter       String
+  referralSource    String?
+  workAuthorization String?
+
+  resumeFileName   String
+  resumeStoredPath String
+  resumeMime       String
+  resumeSize       Int
+
+  createdAt DateTime @default(now())
+
+  @@index([careerId])
+  @@index([createdAt])
 }
 
 model SuccessStory {
@@ -39,6 +80,9 @@ model SuccessStory {
   slug           String   @unique
   title          String
   industry       String
+  listImage      String?
+  heroImage      String?
+  caseData       Json?
   summary        String
   about          String
   challenge      String
@@ -57,4 +101,30 @@ model MediaAsset {
   mimeType  String
   size      Int
   createdAt DateTime @default(now())
+}
+
+model Page {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  slug      String   @unique
+  title     String
+  content   String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model ContactLead {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName   String
+  email      String
+  phone      String?
+  company    String?
+  message    String
+  sourcePage String?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([email])
 }

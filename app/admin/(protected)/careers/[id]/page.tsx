@@ -37,7 +37,10 @@ export default async function AdminCareerDetailPage({ params }: { params: Promis
               <p className="mt-1 font-medium">{row.location}</p>
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
+            <Button asChild variant="secondary">
+              <Link href={`/admin/careers/applications?careerId=${encodeURIComponent(row.id)}`}>View applicants</Link>
+            </Button>
             <Button asChild variant="outline">
               <Link href={`/admin/careers/${row.id}/edit`}>Edit</Link>
             </Button>
