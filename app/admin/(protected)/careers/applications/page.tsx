@@ -6,6 +6,7 @@ import { tableStyles } from "@/components/admin/ui/styles";
 import { Eye, Trash2 } from "lucide-react";
 
 type SearchParams = { careerId?: string };
+type CareerApplicationRow = Awaited<ReturnType<typeof listCareerApplications>>[number];
 
 export default async function AdminCareerApplicationsPage({
   searchParams,
@@ -16,7 +17,7 @@ export default async function AdminCareerApplicationsPage({
   const careerId =
     rawCareerId && /^[a-f\d]{24}$/i.test(rawCareerId) ? rawCareerId : undefined;
 
-  let rows: Awaited<ReturnType<typeof listCareerApplications>> = [];
+  let rows: CareerApplicationRow[] = [];
   try {
     rows = await listCareerApplications(careerId);
   } catch {
@@ -73,7 +74,7 @@ export default async function AdminCareerApplicationsPage({
                 </td>
               </tr>
             ) : (
-              rows.map((row, idx) => (
+              rows.map((row: CareerApplicationRow, idx: number) => (
                 <tr key={row.id} className={tableStyles.row}>
                   <td className={tableStyles.cell}>{idx + 1}</td>
                   <td className={tableStyles.cell}>
