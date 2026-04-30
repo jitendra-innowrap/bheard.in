@@ -10,6 +10,14 @@ export default async function AdminBlogEditPage({ params }: { params: Promise<Pa
   const { id } = await params;
   const row = await getBlogPostById(id);
   if (!row) notFound();
+  const rowWithOptionalAuthorFields = row as typeof row & {
+    subtitle?: string | null;
+    showAuthorDetails?: boolean | null;
+    author?: string | null;
+    authorImage?: string | null;
+    thumbnailUrl?: string | null;
+    thumbnailAlt?: string | null;
+  };
 
   return (
     <div className="space-y-6">
@@ -21,13 +29,13 @@ export default async function AdminBlogEditPage({ params }: { params: Promise<Pa
             initial={{
               slug: row.slug,
               title: row.title,
-              subtitle: row.subtitle ?? "",
-              showAuthorDetails: row.showAuthorDetails ?? true,
-              author: row.author ?? "BHeard Editorial",
-              authorImage: row.authorImage ?? "",
+              subtitle: rowWithOptionalAuthorFields.subtitle ?? "",
+              showAuthorDetails: rowWithOptionalAuthorFields.showAuthorDetails ?? true,
+              author: rowWithOptionalAuthorFields.author ?? "BHeard Editorial",
+              authorImage: rowWithOptionalAuthorFields.authorImage ?? "",
               excerpt: row.excerpt,
-              thumbnailUrl: row.thumbnailUrl ?? "",
-              thumbnailAlt: row.thumbnailAlt ?? "",
+              thumbnailUrl: rowWithOptionalAuthorFields.thumbnailUrl ?? "",
+              thumbnailAlt: rowWithOptionalAuthorFields.thumbnailAlt ?? "",
               category: row.category,
               readTime: row.readTime,
               content: row.content,
