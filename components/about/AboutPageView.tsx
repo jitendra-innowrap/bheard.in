@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ArrowRight, Compass, Layers, Megaphone, Rocket } from "lucide-react";
 import ClientLogos from "@/components/ClientLogos";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import { prefersReducedMotion } from "@/lib/motion/animations";
 import { sectionBandY, sectionPageX, sectionStackTop } from "@/components/system/sectionTheme";
 
@@ -98,22 +99,6 @@ export default function AboutPageView() {
         );
       });
 
-      gsap.fromTo(
-        '[data-about-mission="copy"]',
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.68,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: '[data-about-mission="section"]',
-            start: "top 82%",
-            once: true,
-          },
-        }
-      );
-
       const cards = gsap.utils.toArray<HTMLElement>("[data-about-card]");
       if (cards.length) {
         gsap.fromTo(
@@ -198,7 +183,7 @@ export default function AboutPageView() {
     <div ref={rootRef}>
       <section
         ref={heroRef}
-        className="relative isolate flex min-h-[88vh] flex-col justify-end overflow-hidden px-8 pb-20 pt-36 md:min-h-[90vh] md:pb-28 md:pt-40"
+        className="relative isolate flex min-h-[88vh] flex-col justify-center overflow-hidden px-8 pb-14 pt-28 md:min-h-[90vh] md:pb-20 md:pt-10"
       >
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-surface-container-low to-surface-container-lowest" />
         <div
@@ -216,7 +201,7 @@ export default function AboutPageView() {
           Digital marketing agency Mumbai · BHeard Consulting
         </p>
         <div className="relative z-[2] mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 md:grid-cols-12 md:items-center md:gap-12">
-          <div className="md:col-span-7 md:flex md:min-h-[340px] md:items-center">
+          <div className="md:col-span-7 md:flex md:min-h-[280px] md:items-center">
             <h1 className="font-headline text-[clamp(2.75rem,9vw,5.5rem)] font-black uppercase leading-[0.95] tracking-tight text-neutral-900 motion-reduce:opacity-100">
               {ABOUT_HERO_TEXT.split("").map((char, idx) => {
                 if (char === "\n") return <br key={`about-hero-br-${idx}`} />;
@@ -282,19 +267,16 @@ export default function AboutPageView() {
         </div>
       </section>
 
-      <section data-about-mission="section" className={`bg-surface-container-lowest ${sectionPageX} ${sectionBandY}`}>
-        <div className="mx-auto max-w-7xl">
-          <p
-            data-about-mission="copy"
-            className="mx-auto max-w-4xl text-center font-headline text-headline font-bold leading-tight text-neutral-900"
-          >
-            Our mission:{" "}
-            <span className="text-primary-fixed">transform your brand into a market leader.</span> We have partnered
-            with global brands and emerging startups alike—delivering social campaigns, targeted growth strategies, and
-            product development roadmaps that drive results.
-          </p>
-        </div>
-      </section>
+      <SectionCharReveal
+        as="section"
+        layout="viewportPin"
+        titleVariant="belief"
+        titleAs="p"
+        eyebrow="Our mission"
+        title="Transform your brand into a market leader. We partner with global brands and emerging startups-delivering social campaigns, growth strategies, and product roadmaps that drive measurable outcomes."
+        className={`flex min-h-[100dvh] flex-col justify-center bg-surface-container-lowest ${sectionPageX} ${sectionBandY}`}
+        innerClassName="mx-auto max-w-5xl py-4 md:py-6"
+      />
 
       <section className={`bg-surface-container-highest/60 ${sectionPageX} ${sectionBandY} ${sectionStackTop}`}>
         <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-2 md:gap-20 md:items-center">
@@ -318,7 +300,7 @@ export default function AboutPageView() {
               </p>
             </div>
           </div>
-          <div data-about-reveal className="relative aspect-[4/5] overflow-hidden rounded-xl bg-surface-container-high md:aspect-square">
+          <div data-about-reveal className="relative aspect-[4/5] max-h-[400px] w-full overflow-hidden rounded-xl bg-surface-container-high md:aspect-square">
             <Image
               src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
               alt="BHeard Consulting team collaborating on brand and product strategy in Mumbai"
@@ -455,7 +437,7 @@ export default function AboutPageView() {
       <ClientLogos />
 
       <section id="contact" className={`scroll-mt-28 bg-gradient-to-br from-primary-container to-primary-dim ${sectionPageX} py-24 md:py-32`}>
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-8xl">
           <div data-about-footer="section" className="grid gap-10 md:grid-cols-12 md:items-center md:gap-16" data-about-reveal>
             <div className="md:col-span-7">
               <h2 className="font-headline text-display-lg font-black uppercase leading-[0.95] text-on-primary-container">

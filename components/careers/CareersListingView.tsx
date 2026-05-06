@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import SectionCharReveal from "@/components/motion/SectionCharReveal";
 import { sectionPageX } from "@/components/system/sectionTheme";
 import { prefersReducedMotion } from "@/lib/motion/animations";
 
@@ -31,18 +32,6 @@ export default function CareersListingView({ roles }: { roles: CareerListItem[] 
         '[data-careers-banner="eyebrow"], [data-careers-banner="title"], [data-careers-banner="copy"]',
         { opacity: 0, y: 36 },
         { opacity: 1, y: 0, duration: 0.65, stagger: 0.08, ease: "power3.out" }
-      );
-
-      gsap.fromTo(
-        '[data-careers-summary]',
-        { opacity: 0, y: 34 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.62,
-          ease: "power3.out",
-          scrollTrigger: { trigger: '[data-careers-summary]', start: "top 86%", once: true },
-        }
       );
 
       gsap.fromTo(
@@ -89,11 +78,16 @@ export default function CareersListingView({ roles }: { roles: CareerListItem[] 
 
       <section className={`bg-surface ${sectionPageX} py-section-y-sm md:py-section-y`}>
         <div className="mx-auto max-w-content-max">
-          <div data-careers-summary className="max-w-4xl border-l-2 border-primary pl-5">
-            <p className="font-headline text-[clamp(1.6rem,3vw,2.6rem)] font-bold leading-tight text-on-background">
-              We work async when needed, move with ownership, and optimize for taste plus measurable impact—not process theater.
-            </p>
-          </div>
+          <SectionCharReveal
+            as="div"
+            layout="flow"
+            titleVariant="belief"
+            titleAs="p"
+            title="We work async when needed, move with ownership, and optimize for taste plus measurable impact-not process theater."
+            className="max-w-4xl border-l-2 border-primary pl-5"
+            innerClassName=""
+            scrubEnd="+=28%"
+          />
 
           <div className="mt-14" data-careers-list>
             <p className="font-label text-label-sm uppercase tracking-[0.2em] text-primary">Open roles</p>

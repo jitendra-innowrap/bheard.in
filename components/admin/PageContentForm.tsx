@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -20,9 +20,11 @@ type PageFormModel = z.infer<typeof pageFormSchema>;
 export default function PageContentForm({
   slug,
   initial,
+  loading = false,
 }: {
   slug: string;
   initial?: { title: string; content: string };
+  loading?: boolean;
 }) {
   const form = useForm<PageFormModel>({
     resolver: zodResolver(pageFormSchema),
@@ -35,6 +37,12 @@ export default function PageContentForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (initial) {
+      form.reset(initial);
+    }
+  }, [initial, form]);
 
   const submit = form.handleSubmit(async (model) => {
     setSaving(true);
@@ -62,6 +70,7 @@ export default function PageContentForm({
 
   return (
     <form onSubmit={submit} className="grid gap-5">
+      {loading ? <div className="h-10 animate-pulse rounded-md border border-border bg-card" /> : null}
       <FormField label="Page Title" error={form.formState.errors.title?.message}>
         <Input {...form.register("title")} />
       </FormField>

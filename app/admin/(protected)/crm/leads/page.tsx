@@ -1,6 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { PageHeader } from "@/components/admin/PageHeader";
-import { listContactLeads } from "@/lib/services/contactLeads.service";
-import type { ContactLead } from "@prisma/client";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/admin/ui/button";
+import { tableStyles } from "@/components/admin/ui/styles";
+import { Mail } from "lucide-react";
 
 function formatDate(date: Date) {
   return new Date(date).toLocaleString("en-US", {
@@ -12,13 +18,25 @@ function formatDate(date: Date) {
   });
 }
 
-export default async function AdminCrmLeadsPage() {
-  let leads: ContactLead[] = [];
-  try {
-    leads = await listContactLeads();
-  } catch {
-    leads = [];
-  }
+export default function AdminCrmLeadsPage() {
+  const [leads, setLeads] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      setLoading(true);
+      const res = await fetch("/api/contact-leads?admin=true");
+      const json = await res.json().catch(() => ({ data: [] }));
+      if (cancelled) return;
+      setLeads(Array.isArray(json.data) ? json.data : []);
+      setLoading(false);
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -28,37 +46,54 @@ export default async function AdminCrmLeadsPage() {
         description="Inbound leads captured from contact forms and routed to the admin CRM queue."
       />
 
-      <div className="overflow-hidden rounded-lg border border-border bg-card">
-        <table className="min-w-full divide-y divide-border text-sm">
-          <thead className="bg-muted/40">
-            <tr>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Serial</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Submitted</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Name</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Email</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Phone</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Company</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Source</th>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Message</th>
+      {loading ? <div className="h-40 animate-pulse rounded-lg border border-border bg-card" /> : null}
+      <div className={tableStyles.wrapper}>
+        <table className={tableStyles.table}>
+          <thead>
+            <tr className={tableStyles.headRow}>
+              <th className={tableStyles.headCell}>Serial</th>
+              <th className={tableStyles.headCell}>Submitted</th>
+              <th className={tableStyles.headCell}>Name</th>
+              <th className={tableStyles.headCell}>Email</th>
+              <th className={tableStyles.headCell}>Phone</th>
+              <th className={tableStyles.headCell}>Company</th>
+              <th className={tableStyles.headCell}>Source</th>
+              <th className={tableStyles.headCell}>Message</th>
+              <th className={tableStyles.headCell}>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody>
             {leads.length ? (
               leads.map((lead, idx) => (
-                <tr key={lead.id} className="align-top">
-                  <td className="px-4 py-3 text-muted-foreground">{idx + 1}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{formatDate(lead.createdAt)}</td>
-                  <td className="px-4 py-3 text-foreground">{lead.fullName}</td>
-                  <td className="px-4 py-3 text-foreground">{lead.email}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{lead.phone || "—"}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{lead.company || "—"}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{lead.sourcePage || "—"}</td>
-                  <td className="max-w-[460px] px-4 py-3 text-muted-foreground">{lead.message}</td>
+                <tr key={lead.id} className={tableStyles.row}>
+                  <td className={tableStyles.cell}>{idx + 1}</td>
+                  <td className={tableStyles.cell}>{formatDate(lead.createdAt)}</td>
+                  <td className={tableStyles.cell}>{lead.fullName}</td>
+                  <td className={tableStyles.cell}>{lead.email}</td>
+                  <td className={tableStyles.cell}>{lead.phone || "—"}</td>
+                  <td className={tableStyles.cell}>{lead.company || "—"}</td>
+                  <td className={tableStyles.cell}>
+                    {lead.sourcePage ? (
+                      <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                        {lead.sourcePage}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td className={`${tableStyles.cell} max-w-[460px]`}>{lead.message}</td>
+                  <td className={tableStyles.cell}>
+                    <Button asChild variant="ghost" size="icon" aria-label="Email lead">
+                      <Link href={`mailto:${lead.email}`}>
+                        <Mail className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">
+                <td colSpan={9} className="px-4 py-8 text-center text-muted-foreground">
                   No leads captured yet.
                 </td>
               </tr>

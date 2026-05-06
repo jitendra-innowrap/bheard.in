@@ -1,14 +1,18 @@
 "use client";
 
-import "@/lib/motion/config";
 import Image from "next/image";
-import { RefObject, useRef } from "react";
-import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
+import { useMemo } from "react";
+import LogoLoop, { type LogoItem } from "@/components/LogoLoop";
 import SectionCharReveal from "@/components/motion/SectionCharReveal";
-import { sectionBandY, sectionPageX, sectionTitleMarginCompact } from "@/components/system/sectionTheme";
+import {
+  sectionBandY,
+  sectionPageX,
+  sectionTitleMarginCompact,
+} from "@/components/system/sectionTheme";
 
-gsap.registerPlugin(useGSAP);
+/** Slower base marquee + gentler hover crawl (px/s in LogoLoop RAF loop) */
+const STRIP_SPEED = 68;
+const HOVER_SPEED = 22;
 
 type ClientLogo = {
   src: string;
@@ -45,84 +49,33 @@ const rowTwoLogos: ClientLogo[] = [
   { src: "/assets/client-logos/dr-sameera.webp", alt: "Dr. Sameera" },
 ];
 
-function LogoStrip({
-  logos,
-  stripRef,
-  label,
-}: {
-  logos: ClientLogo[];
-  stripRef: RefObject<HTMLDivElement | null>;
-  label: string;
-}) {
-  const duplicated = [...logos, ...logos];
-
-  return (
-    <div className="overflow-hidden">
-      <div ref={stripRef} className="logo-track flex w-max items-center">
-        {duplicated.map((logo, idx) => (
-          <div
-            key={`${logo.src}-${idx}`}
-            className="mx-4 flex h-[92px] w-[178px] shrink-0 items-center justify-center md:mx-6"
-          >
-            <Image
-              src={logo.src}
-              alt={logo.alt}
-              width={178}
-              height={92}
-              sizes="178px"
-              aria-label={label}
-              className="h-auto w-full object-contain grayscale opacity-65 transition duration-500 will-change-transform hover:scale-[1.02] hover:opacity-100 hover:grayscale-0"
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+function toLogoLoopItems(logos: ClientLogo[]): LogoItem[] {
+  return logos.map((logo) => ({
+    node: (
+      <span className="flex h-[92px] w-[178px] shrink-0 items-center justify-center px-2 md:px-4">
+        <Image
+          src={logo.src}
+          alt={logo.alt}
+          width={178}
+          height={92}
+          sizes="178px"
+          className="h-auto max-h-[88px] w-full object-contain opacity-65 grayscale transition-[filter,opacity,transform] duration-[500ms] ease-out group-hover/item:scale-[1.02] group-hover/item:opacity-100 group-hover/item:grayscale-0"
+        />
+      </span>
+    ),
+    ariaLabel: logo.alt,
+    title: logo.alt,
+  }));
 }
 
 export default function ClientLogos() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const rowOneRef = useRef<HTMLDivElement | null>(null);
-  const rowTwoRef = useRef<HTMLDivElement | null>(null);
+  const logosRowOne = useMemo(() => toLogoLoopItems(rowOneLogos), []);
+  const logosRowTwo = useMemo(() => toLogoLoopItems(rowTwoLogos), []);
 
-  useGSAP(
-    () => {
-      const timelines: gsap.core.Timeline[] = [];
-      const strips = [
-        { el: rowOneRef.current, from: 0, to: -50, duration: 70 },
-        { el: rowTwoRef.current, from: -50, to: 0, duration: 48 },
-      ];
-
-      const mm = gsap.matchMedia();
-
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        strips.forEach((strip) => {
-          if (!strip.el) {
-            return;
-          }
-
-          gsap.set(strip.el, { xPercent: strip.from });
-
-          const tl = gsap.timeline({
-            repeat: -1,
-            defaults: { ease: "none" },
-          });
-
-          tl.to(strip.el, {
-            xPercent: strip.to,
-            duration: strip.duration,
-          });
-
-          timelines.push(tl);
-        });
-      });
-    },
-    { scope: sectionRef }
-  );
+  const fadeTint = "#ffffff";
 
   return (
     <section
-      ref={sectionRef}
       className={`relative overflow-hidden bg-surface-container-lowest ${sectionPageX} ${sectionBandY}`}
     >
       <SectionCharReveal
@@ -137,12 +90,31 @@ export default function ClientLogos() {
       />
 
       <div className="relative space-y-5 md:space-y-6">
-        <LogoStrip logos={rowOneLogos} stripRef={rowOneRef} label="Client logos strip one" />
-        <LogoStrip logos={rowTwoLogos} stripRef={rowTwoRef} label="Client logos strip two" />
+        <LogoLoop
+          logos={logosRowOne}
+          ariaLabel="Client logos, first row"
+          speed={STRIP_SPEED}
+          direction="left"
+          logoHeight={92}
+          gap={44}
+          hoverSpeed={HOVER_SPEED}
+          fadeOut
+          fadeOutColor={fadeTint}
+          className="py-2"
+        />
+        <LogoLoop
+          logos={logosRowTwo}
+          ariaLabel="Client logos, second row"
+          speed={STRIP_SPEED}
+          direction="right"
+          logoHeight={92}
+          gap={44}
+          hoverSpeed={HOVER_SPEED}
+          fadeOut
+          fadeOutColor={fadeTint}
+          className="py-2"
+        />
       </div>
-
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-surface-container-lowest to-transparent md:w-28" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-surface-container-lowest to-transparent md:w-28" />
     </section>
   );
 }

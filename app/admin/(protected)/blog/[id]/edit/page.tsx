@@ -1,15 +1,39 @@
-import { notFound } from "next/navigation";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import BlogForm from "@/components/admin/BlogForm";
-import { getBlogPostById } from "@/lib/services/blog.service";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent } from "@/components/admin/ui/card";
 
-type Params = { id: string };
+export default function AdminBlogEditPage() {
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
+  const [row, setRow] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export default async function AdminBlogEditPage({ params }: { params: Promise<Params> }) {
-  const { id } = await params;
-  const row = await getBlogPostById(id);
-  if (!row) notFound();
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    const run = async () => {
+      setLoading(true);
+      const res = await fetch("/api/blog?includeDraft=true");
+      const json = await res.json().catch(() => ({ data: [] }));
+      if (cancelled) return;
+      const found = (json.data ?? []).find((item: any) => item.id === id) ?? null;
+      setRow(found);
+      setLoading(false);
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  if (loading) return <div className="h-48 animate-pulse rounded-lg border border-border bg-card" />;
+  if (!row) return <p className="text-sm text-muted-foreground">Post not found.</p>;
+
   const rowWithOptionalAuthorFields = row as typeof row & {
     subtitle?: string | null;
     showAuthorDetails?: boolean | null;
@@ -40,7 +64,7 @@ export default async function AdminBlogEditPage({ params }: { params: Promise<Pa
               readTime: row.readTime,
               content: row.content,
               published: row.published,
-              publishedAt: row.publishedAt?.toISOString() ?? null,
+              publishedAt: row.publishedAt ? new Date(row.publishedAt).toISOString() : null,
             }}
           />
         </CardContent>

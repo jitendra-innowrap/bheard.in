@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import Link from "next/link";
-import { listAllPages } from "@/lib/services/page.service";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/admin/PageHeader";
 
 const MANAGED_PAGES = [
@@ -7,15 +10,27 @@ const MANAGED_PAGES = [
   { slug: "terms-and-conditions", label: "Terms & Conditions" },
 ];
 
-export default async function AdminPagesListPage() {
-  let pages: { slug: string; title: string; updatedAt: Date }[] = [];
-  try {
-    pages = await listAllPages();
-  } catch {
-    pages = [];
-  }
+export default function AdminPagesListPage() {
+  const [pages, setPages] = useState<Array<{ slug: string; title: string; updatedAt: string }>>([]);
+  const [loading, setLoading] = useState(true);
 
-  const pageMap = new Map(pages.map((p) => [p.slug, p]));
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      setLoading(true);
+      const res = await fetch("/api/pages");
+      const json = await res.json().catch(() => ({ data: [] }));
+      if (cancelled) return;
+      setPages(Array.isArray(json.data) ? json.data : []);
+      setLoading(false);
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const pageMap = useMemo(() => new Map(pages.map((p) => [p.slug, p])), [pages]);
 
   return (
     <div className="space-y-6">
@@ -25,6 +40,7 @@ export default async function AdminPagesListPage() {
         description="Manage Privacy Policy, Terms & Conditions, and other legal content."
       />
 
+      {loading ? <div className="h-40 animate-pulse rounded-lg border border-border bg-card" /> : null}
       <div className="grid gap-4 md:grid-cols-2">
         {MANAGED_PAGES.map((mp) => {
           const existing = pageMap.get(mp.slug);

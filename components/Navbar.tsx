@@ -8,19 +8,23 @@ import Image from "next/image";
 import logo from "@/app/logo.png";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 gsap.registerPlugin(useGSAP);
 
-interface NavLink {
-  label: string;
-  href: string;
-}
+type NavLink = { label: string; href: string };
+type NavGroup = { label: string; children: NavLink[] };
+
+const solutionsGroup: NavGroup = {
+  label: "Solutions",
+  children: [
+    { label: "Brand Solutions", href: "/brand-solutions" },
+    { label: "Tech Solutions", href: "/tech-solutions" },
+  ],
+};
 
 const navLinks: NavLink[] = [
   { label: "Work", href: "/" },
-  { label: "Brand", href: "/brand-solutions" },
-  { label: "Tech", href: "/tech-solutions" },
   { label: "Blogs", href: "/blog" },
   { label: "Stories", href: "/success-stories" },
   { label: "About", href: "/about" },
@@ -39,11 +43,24 @@ export default function Navbar() {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const onStoryHero = isSuccessStoryDetail(pathname);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [solutionsOpenDesktop, setSolutionsOpenDesktop] = useState(false);
+  const [solutionsOpenMobile, setSolutionsOpenMobile] = useState(false);
+  const solutionsRef = useRef<HTMLDivElement | null>(null);
+  const hoverOpenTimerRef = useRef<number | null>(null);
+  const hoverCloseTimerRef = useRef<number | null>(null);
+
+  const isSolutionsActive =
+    pathname === "/brand-solutions" ||
+    pathname.startsWith("/brand-solutions/") ||
+    pathname === "/tech-solutions" ||
+    pathname.startsWith("/tech-solutions/");
 
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   useEffect(() => {
     setDrawerOpen(false);
+    setSolutionsOpenDesktop(false);
+    setSolutionsOpenMobile(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -81,6 +98,44 @@ export default function Navbar() {
     },
     { scope: navRef }
   );
+
+  useGSAP(
+    () => {
+      const menu = solutionsRef.current?.querySelector<HTMLElement>("[data-solutions-menu]");
+      if (!menu) return;
+      if (solutionsOpenDesktop) {
+        gsap.fromTo(
+          menu,
+          { opacity: 0, y: 6 },
+          { opacity: 1, y: 0, duration: 0.18, ease: "power2.out", overwrite: "auto" }
+        );
+      }
+    },
+    { dependencies: [solutionsOpenDesktop] }
+  );
+
+  const clearHoverTimers = () => {
+    if (hoverOpenTimerRef.current !== null) {
+      window.clearTimeout(hoverOpenTimerRef.current);
+      hoverOpenTimerRef.current = null;
+    }
+    if (hoverCloseTimerRef.current !== null) {
+      window.clearTimeout(hoverCloseTimerRef.current);
+      hoverCloseTimerRef.current = null;
+    }
+  };
+
+  const onSolutionsMouseEnter = () => {
+    if (typeof window === "undefined") return;
+    clearHoverTimers();
+    hoverOpenTimerRef.current = window.setTimeout(() => setSolutionsOpenDesktop(true), 90);
+  };
+
+  const onSolutionsMouseLeave = () => {
+    if (typeof window === "undefined") return;
+    clearHoverTimers();
+    hoverCloseTimerRef.current = window.setTimeout(() => setSolutionsOpenDesktop(false), 120);
+  };
 
   useGSAP(
     () => {
@@ -129,6 +184,60 @@ export default function Navbar() {
           />
         </Link>
         <div className="hidden md:flex gap-12" data-anim="nav-menu">
+          <div
+            ref={solutionsRef}
+            className="relative"
+            onMouseEnter={onSolutionsMouseEnter}
+            onMouseLeave={onSolutionsMouseLeave}
+            onFocus={() => setSolutionsOpenDesktop(true)}
+            onBlur={(event) => {
+              const nextTarget = event.relatedTarget as Node | null;
+              if (!solutionsRef.current?.contains(nextTarget)) setSolutionsOpenDesktop(false);
+            }}
+          >
+            <button
+              type="button"
+              className={`inline-flex items-center gap-1 font-headline font-bold uppercase tracking-tight transition-colors duration-300 ${
+                isSolutionsActive
+                  ? onStoryHero
+                    ? "text-primary-fixed"
+                    : "text-orange-500"
+                  : onStoryHero
+                    ? "text-white/85 hover:text-primary-fixed"
+                    : "text-neutral-700 hover:text-orange-400"
+              }`}
+              aria-haspopup="menu"
+              aria-expanded={solutionsOpenDesktop}
+            >
+              {solutionsGroup.label}
+              <ChevronDown className={`h-4 w-4 transition-transform ${solutionsOpenDesktop ? "rotate-180" : ""}`} />
+            </button>
+            {solutionsOpenDesktop ? (
+              <div
+                data-solutions-menu
+                role="menu"
+                className={`absolute left-0 top-full mt-2 min-w-[220px] border border-outline-variant/40 bg-white/95 p-1.5 backdrop-blur ${
+                  onStoryHero ? "shadow-[0_10px_30px_-20px_rgba(0,0,0,0.45)]" : "shadow-[0_10px_30px_-22px_rgba(0,0,0,0.22)]"
+                }`}
+              >
+                {solutionsGroup.children.map((item) => {
+                  const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      role="menuitem"
+                      className={`block px-3 py-2 text-sm font-headline font-bold uppercase tracking-[0.06em] transition-colors ${
+                        active ? "bg-primary/10 text-primary" : "text-neutral-700 hover:bg-neutral-100"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
           {navLinks.map((link) => {
             const active = link.href.includes("#")
               ? false
@@ -202,6 +311,41 @@ export default function Navbar() {
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6">
+          <button
+            type="button"
+            data-drawer-link
+            onClick={() => setSolutionsOpenMobile((prev) => !prev)}
+            className={`flex w-full items-center justify-between rounded-lg px-4 py-3.5 font-headline text-lg font-bold uppercase tracking-tight transition-colors duration-200 ${
+              isSolutionsActive
+                ? "bg-primary/10 text-primary"
+                : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+            }`}
+            aria-expanded={solutionsOpenMobile}
+            aria-controls="mobile-solutions-menu"
+          >
+            <span>{solutionsGroup.label}</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${solutionsOpenMobile ? "rotate-180" : ""}`} />
+          </button>
+          {solutionsOpenMobile ? (
+            <div id="mobile-solutions-menu" className="mt-1 grid gap-1 pl-2">
+              {solutionsGroup.children.map((item) => {
+                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeDrawer}
+                    data-drawer-link
+                    className={`rounded-lg px-4 py-3 text-base font-headline font-bold uppercase tracking-tight transition-colors duration-200 ${
+                      active ? "bg-primary/10 text-primary" : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          ) : null}
           {navLinks.map((link) => {
             const active = link.href.includes("#")
               ? false

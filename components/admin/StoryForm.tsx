@@ -252,6 +252,7 @@ export default function StoryForm({
   const router = useRouter();
   const [guidedCaseData, setGuidedCaseData] = useState<GuidedCaseData>(() => parseGuidedCaseData(form.getValues("caseData")));
   const advancedStorytellingEnabled = true;
+  const [showGuidedStorytelling, setShowGuidedStorytelling] = useState(false);
   const executionBlocks = useMemo(() => guidedCaseData.execution, [guidedCaseData.execution]);
 
   const uploadImage = async (file: File, folder: string) => {
@@ -416,11 +417,21 @@ export default function StoryForm({
       </FormField>
       {advancedStorytellingEnabled ? (
         <div className="rounded-md border border-border p-4 transition-all duration-200">
-          <p className="text-sm font-medium">Storytelling structure (guided)</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Fill optional advanced fields to control animated detail page sections without editing JSON.
-          </p>
-          <div className="mt-4 grid items-start gap-4 md:grid-cols-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium">Storytelling structure (guided)</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Fill optional advanced fields to control animated detail page sections without editing JSON.
+              </p>
+            </div>
+            <label className="inline-flex items-center gap-2 text-sm text-foreground">
+              <Switch checked={showGuidedStorytelling} onCheckedChange={(checked: boolean) => setShowGuidedStorytelling(checked)} />
+              <span>{showGuidedStorytelling ? "Hide" : "Show"}</span>
+            </label>
+          </div>
+          {showGuidedStorytelling ? (
+          <div className="mt-4 space-y-4">
+          <div className="grid items-start gap-4 md:grid-cols-3">
           <FormField label="Hero title override">
             <Input
               value={guidedCaseData.heroTitle}
@@ -708,6 +719,10 @@ export default function StoryForm({
               ))}
             </div>
           </div>
+          </div>
+          ) : (
+            <p className="mt-3 text-xs text-muted-foreground">Guided structure is hidden. Toggle Show to edit advanced storytelling fields.</p>
+          )}
         </div>
       ) : null}
       <label className="inline-flex items-center gap-2 text-sm text-foreground">

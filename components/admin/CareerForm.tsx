@@ -9,6 +9,7 @@ import { Controller } from "react-hook-form";
 import { Input } from "@/components/admin/ui/input";
 import { Textarea } from "@/components/admin/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/admin/ui/select";
+import { Switch } from "@/components/admin/ui/switch";
 import { FormField } from "@/components/admin/ui/form-field";
 import { Button } from "@/components/admin/ui/button";
 
@@ -110,14 +111,15 @@ export default function CareerForm({
         <Textarea rows={14} {...form.register("description")} />
       </FormField>
 
-      <label className="inline-flex items-center gap-2 text-sm text-foreground">
-        <input
-          type="checkbox"
-          checked={form.watch("active")}
-          onChange={(e) => form.setValue("active", e.target.checked)}
-        />
-        Active
-      </label>
+      <div className="rounded-md border border-border p-4">
+        <label className="inline-flex items-center gap-2 text-sm text-foreground">
+          <Switch
+            checked={form.watch("active")}
+            onCheckedChange={(checked: boolean) => form.setValue("active", checked)}
+          />
+          <span>Active</span>
+        </label>
+      </div>
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 

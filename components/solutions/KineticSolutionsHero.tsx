@@ -274,12 +274,12 @@ export default function KineticSolutionsHero({
 
           <div ref={morphRef} className="mt-8 inline-flex min-h-[2.75rem] items-center gap-3">
             <span className="font-label text-xs uppercase tracking-[0.2em] text-on-surface-variant">Focus</span>
-            <div ref={morphParallaxRef} className="relative h-10 min-w-[9.5rem] will-change-transform">
+            <div ref={morphParallaxRef} className="relative h-11 min-w-[11.5rem] will-change-transform">
               {morphWords.map((w, idx) => (
                 <span
                   key={w}
                   data-morph-layer
-                  className="absolute left-0 top-0 font-headline text-lg font-bold uppercase tracking-tight text-on-background md:text-xl"
+                  className="absolute inset-0 inline-flex items-center font-headline text-lg font-bold uppercase tracking-tight text-on-background md:text-xl"
                   style={{ zIndex: morphWords.length - idx }}
                 >
                   {w}

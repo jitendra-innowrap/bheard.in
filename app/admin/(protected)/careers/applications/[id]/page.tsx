@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getCareerApplicationById } from "@/lib/services/careerApplications.service";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Card, CardContent } from "@/components/admin/ui/card";
 import { Button } from "@/components/admin/ui/button";
 import { detailGridStyles } from "@/components/admin/ui/styles";
-
-type Params = { id: string };
 
 function Field({ label, value }: { label: string; value: string | null | undefined }) {
   if (value === null || value === undefined || value === "") return null;
@@ -18,17 +19,36 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   );
 }
 
-export default async function AdminCareerApplicationDetailPage({ params }: { params: Promise<Params> }) {
-  const { id } = await params;
+export default function AdminCareerApplicationDetailPage() {
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
+  const [row, setRow] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  let row = null;
-  try {
-    row = await getCareerApplicationById(id);
-  } catch {
-    row = null;
-  }
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    const run = async () => {
+      setLoading(true);
+      const res = await fetch(`/api/admin/career-applications/${id}`);
+      if (!res.ok) {
+        if (!cancelled) setRow(null);
+        if (!cancelled) setLoading(false);
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (cancelled) return;
+      setRow(json?.data ?? null);
+      setLoading(false);
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
-  if (!row) notFound();
+  if (loading) return <div className="h-48 animate-pulse rounded-lg border border-border bg-card" />;
+  if (!row) return <p className="text-sm text-muted-foreground">Application not found.</p>;
 
   return (
     <div className="space-y-6">

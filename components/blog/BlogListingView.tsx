@@ -26,6 +26,8 @@ export type BlogListItem = {
   publishedAt: Date | string | null;
 };
 
+const COVER_FALLBACK = "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1600&q=80";
+
 function formatDate(value: Date | string | null) {
   if (!value) return "Draft";
   const date = value instanceof Date ? value : new Date(value);
@@ -110,7 +112,7 @@ export default function BlogListingView({ posts }: { posts: BlogListItem[] }) {
             <Link
               href={`/blog/${featured.slug}`}
               data-blog-featured
-              className="group mx-auto grid max-w-5xl border border-outline-variant/60 bg-surface-container-low transition-colors hover:bg-surface-container md:grid-cols-[1fr_1.12fr] md:items-stretch"
+              className="group mx-auto grid border border-outline-variant/60 bg-surface-container-low transition-colors hover:bg-surface-container md:grid-cols-[1fr_1.12fr] md:items-stretch"
             >
               <div className="relative min-h-[220px] border-b border-outline-variant/60 bg-surface-container-high md:min-h-[320px] md:border-b-0 md:border-r">
                 {featured.thumbnailUrl ? (
@@ -121,7 +123,15 @@ export default function BlogListingView({ posts }: { posts: BlogListItem[] }) {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 46vw"
                   />
-                ) : <div className="h-full w-full bg-gradient-to-br from-neutral-800 to-neutral-700" />}
+                ) : (
+                  <Image
+                    src={COVER_FALLBACK}
+                    alt={featured.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 46vw"
+                  />
+                )}
               </div>
               <div className="flex flex-col justify-center p-7 md:p-9">
                 <p className="font-label text-label-sm uppercase tracking-[0.2em] text-primary">Featured</p>
@@ -158,19 +168,17 @@ export default function BlogListingView({ posts }: { posts: BlogListItem[] }) {
                 data-blog-card
                 className="group block border border-outline-variant/60 bg-surface-container-low p-6 transition-colors hover:bg-surface-container"
               >
-                {post.thumbnailUrl ? (
-                  <div className="mb-4 overflow-hidden rounded-lg border border-outline-variant/60">
-                    <div className="relative aspect-[16/10]">
-                      <Image
-                        src={post.thumbnailUrl}
-                        alt={post.thumbnailAlt || post.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 100vw, 33vw"
-                      />
-                    </div>
+                <div className="mb-4 overflow-hidden rounded-lg border border-outline-variant/60">
+                  <div className="relative aspect-[16/10]">
+                    <Image
+                      src={post.thumbnailUrl || COVER_FALLBACK}
+                      alt={post.thumbnailAlt || post.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 33vw"
+                    />
                   </div>
-                ) : null}
+                </div>
                 <p className="font-label text-label-sm uppercase tracking-[0.2em] text-primary">{post.category}</p>
                 <h4 className="mt-4 font-headline text-2xl font-black uppercase leading-tight text-on-background">
                   {post.title}

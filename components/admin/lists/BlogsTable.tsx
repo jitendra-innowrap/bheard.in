@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { CheckCircle2, CircleOff } from "lucide-react";
 import { Pagination } from "@/components/admin/ui/pagination";
 import { FilterBar } from "@/components/admin/ui/filter-bar";
 import { RowActions } from "@/components/admin/ui/row-actions";
 import { tableStyles } from "@/components/admin/ui/styles";
+import { Button } from "@/components/admin/ui/button";
 
 type BlogItem = {
-  id: number;
+  id: string | number;
   slug: string;
   title: string;
   category: string;
@@ -18,6 +21,8 @@ type BlogItem = {
 };
 
 export default function BlogsTable({ rows }: { rows: BlogItem[] }) {
+  const router = useRouter();
+  const [items, setItems] = useState(rows);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [category, setCategory] = useState("all");
@@ -26,13 +31,13 @@ export default function BlogsTable({ rows }: { rows: BlogItem[] }) {
   const [pageSize, setPageSize] = useState(10);
 
   const categories = useMemo(
-    () => ["all", ...Array.from(new Set(rows.map((item) => item.category)))],
-    [rows]
+    () => ["all", ...Array.from(new Set(items.map((item) => item.category)))],
+    [items]
   );
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    const result = rows.filter((item) => {
+    const result = items.filter((item) => {
       const matchesQ = item.title.toLowerCase().includes(q) || item.slug.toLowerCase().includes(q);
       const matchesStatus =
         status === "all" ? true : status === "published" ? item.published : !item.published;
@@ -48,7 +53,26 @@ export default function BlogsTable({ rows }: { rows: BlogItem[] }) {
       return sort === "updated-asc" ? da - db : db - da;
     });
     return result;
-  }, [rows, search, status, category, sort]);
+  }, [items, search, status, category, sort]);
+
+  const togglePublish = async (post: BlogItem) => {
+    const nextPublished = !post.published;
+    const previousItems = items;
+    const optimistic = items.map((item) =>
+      item.id === post.id ? { ...item, published: nextPublished, publishedAt: nextPublished ? new Date() : null } : item
+    );
+    setItems(optimistic);
+    const res = await fetch(`/api/blog/${post.slug}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ published: nextPublished, publishedAt: nextPublished ? new Date().toISOString() : null }),
+    });
+    if (!res.ok) {
+      setItems(previousItems);
+      return;
+    }
+    router.refresh();
+  };
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -119,13 +143,39 @@ export default function BlogsTable({ rows }: { rows: BlogItem[] }) {
                       {post.title}
                     </Link>
                   </td>
-                  <td className={tableStyles.cell}>{post.category}</td>
-                  <td className={tableStyles.cell}>{post.published ? "Published" : "Draft"}</td>
+                  <td className={tableStyles.cell}>
+                    <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                      {post.category}
+                    </span>
+                  </td>
+                  <td className={tableStyles.cell}>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        post.published
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                          : "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
+                      }`}
+                    >
+                      {post.published ? "Published" : "Draft"}
+                    </span>
+                  </td>
                   <td className={tableStyles.cell}>
                     {new Date(post.updatedAt ?? post.publishedAt ?? Date.now()).toLocaleDateString()}
                   </td>
                   <td className={tableStyles.cell}>
-                    <RowActions editHref={`/admin/blog/${post.id}/edit`} detailHref={`/admin/blog/${post.id}`} />
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 gap-1.5 px-2.5 text-xs"
+                        onClick={() => togglePublish(post)}
+                      >
+                        {post.published ? <CircleOff className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+                        {post.published ? "Unpublish" : "Publish"}
+                      </Button>
+                      <RowActions editHref={`/admin/blog/${post.id}/edit`} detailHref={`/admin/blog/${post.id}`} />
+                    </div>
                   </td>
                 </tr>
               ))

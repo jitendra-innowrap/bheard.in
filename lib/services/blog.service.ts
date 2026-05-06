@@ -8,6 +8,11 @@ function requireDb() {
   }
 }
 
+const objectIdRegex = /^[a-f\d]{24}$/i;
+function isObjectId(value: string) {
+  return objectIdRegex.test(value);
+}
+
 export async function listPublishedBlogPosts() {
   requireDb();
   return prisma.blogPost.findMany({
@@ -37,7 +42,12 @@ export async function getBlogPostBySlug(slug: string) {
 
 export async function getBlogPostById(id: string) {
   requireDb();
-  return prisma.blogPost.findUnique({ where: { id } });
+  if (!isObjectId(id)) return null;
+  try {
+    return await prisma.blogPost.findUnique({ where: { id } });
+  } catch {
+    return null;
+  }
 }
 
 export async function createBlogPost(input: BlogPostInput) {
@@ -89,6 +99,9 @@ export async function updateBlogPostBySlug(slug: string, input: BlogPostUpdateIn
 
 export async function updateBlogPostById(id: string, input: BlogPostUpdateInput) {
   requireDb();
+  if (!isObjectId(id)) {
+    throw new Error("Invalid blog id");
+  }
   const data: Prisma.BlogPostUpdateInput = { ...input };
   if (typeof input.subtitle === "string") data.subtitle = input.subtitle || null;
   if (typeof input.author === "string") data.author = input.author || null;
@@ -117,5 +130,8 @@ export async function deleteBlogPostBySlug(slug: string) {
 
 export async function deleteBlogPostById(id: string) {
   requireDb();
+  if (!isObjectId(id)) {
+    throw new Error("Invalid blog id");
+  }
   return prisma.blogPost.delete({ where: { id } });
 }

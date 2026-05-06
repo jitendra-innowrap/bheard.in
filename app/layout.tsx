@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Space_Grotesk, Manrope } from "next/font/google";
 import MotionRoot from "@/components/motion/MotionRoot";
+import TopRouteLoader from "@/components/site/TopRouteLoader";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -30,6 +32,9 @@ export default function RootLayout({
     <html lang="en" className={`${spaceGrotesk.variable} ${manrope.variable}`}>
       <body className="bg-surface text-on-surface font-body">
         <MotionRoot>{children}</MotionRoot>
+        <Suspense fallback={null}>
+          <TopRouteLoader />
+        </Suspense>
       </body>
     </html>
   );

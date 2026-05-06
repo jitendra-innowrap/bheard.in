@@ -1,13 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { CheckCircle2, CircleOff } from "lucide-react";
 import { FilterBar } from "@/components/admin/ui/filter-bar";
 import { Pagination } from "@/components/admin/ui/pagination";
 import { RowActions } from "@/components/admin/ui/row-actions";
 import { tableStyles } from "@/components/admin/ui/styles";
+import { Button } from "@/components/admin/ui/button";
 
 type CareerItem = {
-  id: number;
+  id: string | number;
+  slug?: string;
   title: string;
   department: string;
   type: string;
@@ -17,6 +21,8 @@ type CareerItem = {
 };
 
 export default function CareersTable({ rows }: { rows: CareerItem[] }) {
+  const router = useRouter();
+  const [items, setItems] = useState(rows);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [sort, setSort] = useState("updated-desc");
@@ -25,7 +31,7 @@ export default function CareersTable({ rows }: { rows: CareerItem[] }) {
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    const result = rows.filter((item) => {
+    const result = items.filter((item) => {
       const matchesQ =
         item.title.toLowerCase().includes(q) ||
         item.department.toLowerCase().includes(q) ||
@@ -41,7 +47,24 @@ export default function CareersTable({ rows }: { rows: CareerItem[] }) {
       return sort === "updated-asc" ? da - db : db - da;
     });
     return result;
-  }, [rows, search, status, sort]);
+  }, [items, search, status, sort]);
+
+  const toggleActive = async (role: CareerItem) => {
+    if (!role.slug) return;
+    const nextActive = !role.active;
+    const previousItems = items;
+    setItems(items.map((item) => (item.id === role.id ? { ...item, active: nextActive } : item)));
+    const res = await fetch(`/api/careers/${role.slug}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ active: nextActive }),
+    });
+    if (!res.ok) {
+      setItems(previousItems);
+      return;
+    }
+    router.refresh();
+  };
 
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -100,13 +123,40 @@ export default function CareersTable({ rows }: { rows: CareerItem[] }) {
                 <tr key={role.id} className={tableStyles.row}>
                   <td className={tableStyles.cell}>{(safePage - 1) * pageSize + idx + 1}</td>
                   <td className={tableStyles.cell}>{role.title}</td>
-                  <td className={tableStyles.cell}>{role.department}</td>
+                  <td className={tableStyles.cell}>
+                    <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                      {role.department}
+                    </span>
+                  </td>
                   <td className={tableStyles.cell}>
                     {role.type} · {role.location}
                   </td>
-                  <td className={tableStyles.cell}>{role.active ? "Active" : "Inactive"}</td>
                   <td className={tableStyles.cell}>
-                    <RowActions editHref={`/admin/careers/${role.id}/edit`} detailHref={`/admin/careers/${role.id}`} />
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        role.active
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                          : "bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-200"
+                      }`}
+                    >
+                      {role.active ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td className={tableStyles.cell}>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 gap-1.5 px-2.5 text-xs"
+                        onClick={() => toggleActive(role)}
+                        disabled={!role.slug}
+                      >
+                        {role.active ? <CircleOff className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+                        {role.active ? "Deactivate" : "Activate"}
+                      </Button>
+                      <RowActions editHref={`/admin/careers/${role.id}/edit`} detailHref={`/admin/careers/${role.id}`} />
+                    </div>
                   </td>
                 </tr>
               ))

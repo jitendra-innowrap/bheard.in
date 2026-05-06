@@ -1,20 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import { PageHeader } from "@/components/admin/PageHeader";
 import PageContentForm from "@/components/admin/PageContentForm";
-import { getPageBySlug } from "@/lib/services/page.service";
+export default function AdminPageEditPage() {
+  const params = useParams<{ slug: string }>();
+  const slug = params?.slug ?? "";
+  const [page, setPage] = useState<{ title: string; content: string } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-type Props = { params: Promise<{ slug: string }> };
+  useEffect(() => {
+    if (!slug) return;
+    let cancelled = false;
+    const run = async () => {
+      setLoading(true);
+      const res = await fetch(`/api/pages/${slug}`);
+      if (!res.ok) {
+        if (!cancelled) setPage(null);
+        if (!cancelled) setLoading(false);
+        return;
+      }
+      const json = await res.json().catch(() => null);
+      if (cancelled) return;
+      setPage(json?.data ? { title: json.data.title, content: json.data.content } : null);
+      setLoading(false);
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
-export default async function AdminPageEditPage({ params }: Props) {
-  const { slug } = await params;
-  let page: { title: string; content: string } | null = null;
-
-  try {
-    page = await getPageBySlug(slug);
-  } catch {
-    page = null;
-  }
-
-  const label = slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const label = useMemo(() => slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()), [slug]);
 
   return (
     <div className="space-y-6">
@@ -25,6 +44,7 @@ export default async function AdminPageEditPage({ params }: Props) {
       />
       <PageContentForm
         slug={slug}
+        loading={loading}
         initial={page ? { title: page.title, content: page.content } : undefined}
       />
     </div>

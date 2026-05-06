@@ -89,7 +89,7 @@ export default function TechSolutionsView() {
         subtext="We design and develop scalable digital products, platforms, and automations that drive measurable results."
         primaryCta={{ href: "#tech-build", label: "Start a Project" }}
         secondaryCta={{ href: "/", label: "See Our Work" }}
-        morphWords={["Ship", "Scale", "Secure"]}
+        morphWords={["Ship", "Scale", "Magnetic"]}
         variant="tech"
         media={TECH_HERO_MEDIA}
       />

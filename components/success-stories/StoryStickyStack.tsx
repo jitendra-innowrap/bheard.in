@@ -177,14 +177,17 @@ export default function StoryStickyStack({ cases }: { cases: CaseStudyContent[] 
   });
 
   return (
-    <section ref={sectionRef} className="relative bg-surface pt-4 md:pt-8">
-      <div ref={introRef} className="mx-auto mb-16 max-w-content-max px-gutter-sm md:mb-24 md:px-gutter">
+    <section id="stories-stack" ref={sectionRef} className="relative bg-surface-container-lowest pt-8 md:pt-10">
+      <div ref={introRef} className="mx-auto mb-12 max-w-content-max px-gutter-sm md:mb-16 md:px-gutter">
         <p
           className="mb-3 font-label text-label-sm uppercase tracking-[0.2em] text-primary"
           data-list-intro-eyebrow
         >
-          Proof in the work
+          Case Studies
         </p>
+        <h2 className="font-headline text-[clamp(1.8rem,3.8vw,3.2rem)] font-black leading-[1.02] tracking-tight text-on-surface">
+          Built for Ambitious Brands
+        </h2>
         <p
           className="mt-4 max-w-2xl font-body text-body-lg leading-relaxed text-on-surface-variant md:text-xl"
           data-list-intro-body

@@ -185,16 +185,16 @@ export default function BlogForm({
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
-        <FormField label="Thumbnail URL">
+        <FormField label="Cover Image URL">
           <Input {...form.register("thumbnailUrl")} placeholder="https://..." />
         </FormField>
-        <FormField label="Thumbnail Alt">
-          <Input {...form.register("thumbnailAlt")} placeholder="Describe thumbnail image" />
+        <FormField label="Cover Image Alt Text">
+          <Input {...form.register("thumbnailAlt")} placeholder="Describe cover image" />
         </FormField>
       </div>
 
       <div className="rounded-md border border-border p-4">
-        <p className="mb-3 text-sm font-medium">Upload thumbnail (ImageKit)</p>
+        <p className="mb-3 text-sm font-medium">Upload cover image (ImageKit)</p>
         <Input
           type="file"
           accept="image/*"
@@ -229,7 +229,7 @@ export default function BlogForm({
       </div>
       {thumbnailPreview ? (
         <div className="rounded-md border border-border bg-card p-4">
-          <p className="mb-3 text-sm font-medium">Thumbnail preview</p>
+          <p className="mb-3 text-sm font-medium">Cover preview</p>
           <div className="relative aspect-[16/9] w-full max-w-[420px] overflow-hidden rounded-md border border-border">
             <Image
               src={thumbnailPreview}
