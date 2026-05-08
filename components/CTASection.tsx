@@ -1,9 +1,10 @@
 "use client";
 
 import "@/lib/motion/config";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import ContactPopupModal from "@/components/ContactPopupModal";
 import { prefersReducedMotion } from "@/lib/motion/animations";
 
 gsap.registerPlugin(useGSAP);
@@ -19,6 +20,7 @@ function lineToLetters(line: string, prefix: string) {
 export default function CTASection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const [open, setOpen] = useState(false);
 
   useGSAP(
     () => {
@@ -91,22 +93,31 @@ export default function CTASection() {
           ref={titleRef}
           className="mb-12 inline-block cursor-default font-headline text-[clamp(2.5rem,8vw,8rem)] font-black uppercase leading-[0.95] tracking-tighter text-on-primary-container"
         >
-          <span className="block">{lineToLetters("READY TO BE", "l1")}</span>
+          <span className="block">{lineToLetters("READY TO BE-", "l1")}</span>
           <span className="block">{lineToLetters("HEARD?", "l2")}</span>
         </h3>
         <div className="flex flex-col items-center justify-center gap-6 md:flex-row">
           <button
             type="button"
+            onClick={() => setOpen(true)}
             className="rounded-lg bg-surface px-12 py-6 font-headline text-xl font-black uppercase tracking-widest text-on-surface shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:bg-surface-container-highest hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)] active:translate-y-0"
           >
             Let&apos;s Talk
           </button>
-          <p className="max-w-xs text-left font-body text-lg font-bold text-on-primary-container">
-            We work with a limited number of clients to ensure quality. Book a
-            call and let&apos;s grow your brand.
+          <p className="max-w-sm text-left font-body text-base font-semibold leading-relaxed text-on-primary-container md:text-lg">
+            We work with a limited number of clients to ensure focused strategy
+            and high-quality execution. Book a call to explore how we can build
+            your brand and digital presence.
           </p>
         </div>
       </div>
+      <ContactPopupModal
+        open={open}
+        onClose={() => setOpen(false)}
+        sourcePage="/#cta"
+        title="Let's talk"
+        subtitle="We work with a focused number of clients each quarter. Share your brief - we'll respond within one business day."
+      />
     </section>
   );
 }

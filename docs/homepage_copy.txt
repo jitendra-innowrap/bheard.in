@@ -1,0 +1,334 @@
+B.HEARD
+bheard.in
+HOMEPAGE — COPY & SEO MASTER DOCUMENT
+Positioning: Integrated branding + tech agency  ·  Reference: Schbang tier
+Authored by: Senior Copywriter & SEO Strategist  ·  2025
+
+  ✦  PART A — SEO & META TAGS  
+↳  Implement all tags exactly as written. Do not paraphrase — character counts are optimised for Google's current display limits.
+
+A1 — Page Title Tag
+↳  50–60 characters. Primary keyword front-loaded. Brand name closes. Replaces current: "BHEARD | Kinetic AI-Powered Agency"
+
+
+↳  51 characters. Targets "branding and tech agency India" — the composite keyword that matches Schbang-tier positioning. "AI-Powered" is a trend phrase; "Branding & Tech Agency" is a search phrase.
+
+A2 — Meta Description
+↳  150–160 characters. One value proposition. Signals both pillars. Soft CTA for click-through rate.
+
+
+↳  158 characters. "Integrated branding and tech agency Mumbai" is the anchor phrase. Both pillars named — brand and tech. "One team, one brief, one outcome" is the positioning differentiator.
+
+A3 — Open Graph Tags
+↳  Controls how the link appears on LinkedIn, WhatsApp, and social shares. Critical for B2B referral discovery.
+
+
+
+
+
+
+A4 — Twitter / X Card
+
+
+
+
+A5 — Technical Meta
+
+
+
+
+
+A6 — Schema Markup (JSON-LD)
+↳  Paste inside <head> tag. Enables rich results and Google Business Panel. Implement before launch.
+
+{
+  "@context": "https://schema.org",
+  "@type": ["MarketingAgency", "ProfessionalService"],
+  "name": "BHEARD",
+  "alternateName": "B Heard",
+  "url": "https://bheard.in",
+  "logo": "https://bheard.in/logo.png",
+  "description": "Integrated branding and tech agency in Mumbai offering brand solutions, social media marketing, web development, and mobile app development.",
+  "foundingDate": "2024",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Mumbai",
+    "addressRegion": "Maharashtra",
+    "addressCountry": "IN"
+  },
+  "areaServed": ["India"],
+  "knowsAbout": [
+    "Brand Strategy", "Social Media Marketing", "Campaign Planning",
+    "Content Marketing", "Video Production", "Graphic Design",
+    "Web Development", "Mobile App Development", "UI/UX Design",
+    "E-Commerce Development", "Chatbot Development"
+  ],
+  "sameAs": [
+    "https://www.instagram.com/bheard.in",
+    "https://www.linkedin.com/company/bheard"
+  ]
+}
+
+A7 — Keyword Strategy
+↳  Do not stuff. Use naturally in headings, body copy, alt text, and blog content. Mapped by intent below.
+
+PRIMARY — Homepage H1, title tag, meta description
+branding and tech agency India  ·  integrated marketing agency Mumbai  ·  branding agency Mumbai  ·  digital agency India
+SECONDARY — Section headings and service page titles
+social media marketing agency India  ·  social media management for hospitality brands  ·  custom web development company Mumbai  ·  mobile app development agency India  ·  UI UX design agency  ·  e-commerce website development India  ·  campaign planning agency Mumbai
+LONG-TAIL — Blog posts, FAQs, and body copy
+digital marketing for hotels and resorts India  ·  branding agency for hospitality brands Mumbai  ·  social media strategy for wellness brands  ·  how to build a brand in India  ·  integrated agency vs full service agency  ·  chatbot development for businesses India  ·  mobile app development cost India
+LOCAL SEO — Google Maps and "near me" discovery
+marketing agency Mumbai  ·  digital agency Bandra  ·  branding agency South Mumbai  ·  tech agency Mumbai  ·  creative agency Mumbai
+
+  ✦  PART B — HOMEPAGE COPY (SECTION BY SECTION)  
+↳  Copy written in layout order matching the live site at bheard-in.vercel.app. Each section opens with a dev/design note in italic.
+
+B1 — Navigation
+↳  All lowercase. Confident and minimal. "Solutions" triggers dropdown. No changes needed to nav labels — keep as is.
+
+Nav labels:  Solutions  ·  work  ·  blogs  ·  stories  ·  about  ·  careers
+
+CTA Button:  Let's Talk
+
+B2 — Ticker Strip
+↳  Repeating horizontal marquee. Lowercase throughout. Keyword-dense without feeling stuffed. Replaces generic current content.
+
+✦  capturing voice in the noise  ·  ✦  brand strategy · social media · campaigns · video  ·  ✦  web development · mobile apps · ui/ux · e-commerce  ·  ✦  mumbai, india  ·  ✦  capturing voice in the noise
+
+B3 — Hero
+↳  H1 — primary SEO heading. Keep "CAPTURING VOICE IN THE NOISE." exactly. Sub-eyebrow adds location signal for local SEO. Replace the current hero descriptor — it reads like a generic small business ad.
+
+INTEGRATED BRANDING & TECH AGENCY  ·  MUMBAI, INDIA
+
+CAPTURING
+VOICE IN THE
+NOISE.
+
+↳  Hero descriptor — replaces: "We help businesses get more customers through smart marketing, better branding, and high-performing ads."
+
+One agency. Brand strategy and technology under one roof.
+We build brands that earn attention and digital products that sustain growth — without splitting the brief across three different vendors.
+
+↳  CTAs — Primary action scrolls to work. Secondary scrolls to services. Replace "Discover our kinetic engine" — it's unclear to first-time visitors.
+
+Primary CTA:  See Our Work  →
+Secondary CTA:  Explore What We Do
+↳  Stats bar — three defensible proof points. Update as agency grows. Conservative and specific beats vague and inflated.
+
+
+B4 — Belief Statement
+↳  No heading. No label. Renders as a manifesto — three lines with the first two slightly muted in design, the third landing full black. The current copy here is good — keep it, with one small refinement below.
+
+Every brand has a voice worth hearing.
+Most never get the chance to use it.
+We exist to change that.
+
+B5 — Services Section
+↳  Section intro copy replaces the current line. Updated to reinforce integrated positioning — the key differentiator vs single-discipline agencies.
+
+OUR SERVICES
+
+Strategy, creative and engineering in one loop — so your brand story, your campaigns and your product all move in the same direction, from the first brief to the final build.
+
+— Brand Solutions
+PILLAR 01
+
+↳  Pillar descriptor — replaces "Story, content, and campaign systems that build trust and long-term recall."
+Creative systems, content and campaign strategy for brands that want to be remembered — not just seen.
+
+↳  Service names are fixed to the live layout. Descriptions appear on hover/expand states. Write SEO-aware without keyword stuffing.
+
+01   Social Media Management
+Strategy, content calendars, community management and consistent channel growth. We run your platforms so you can run your business.
+02   Content and Copywriting
+Brand voice, campaign narratives, captions, scripts and website copy. Every word intentional. Every line earning its place.
+03   Video Editing and Animations
+Reels, brand films, product launches and motion graphics. Crafted for retention, built to travel across channels.
+04   Graphic Design and Illustrations
+Visual identity systems, social creatives, collaterals and packaging design. Consistent across every touchpoint.
+05   Campaign Planning
+Full-funnel campaign strategy — from the insight and big idea to the go-live calendar. Built around your goals, not a generic playbook.
+
+— Tech Solutions
+PILLAR 02
+
+↳  Pillar descriptor — replaces "Scalable digital products and automations engineered for measurable growth."
+Digital products and intelligent tools, engineered for any industry. We build the platforms your brand operates on — and the systems that scale it.
+
+↳  Tech Solutions is industry agnostic. Copy reflects that — no hospitality references here. The pillar speaks to any business.
+
+01   Custom Web Development
+Fast, secure, conversion-optimised websites built from the ground up. No templates. No off-the-shelf compromises.
+02   Custom Mobile App Development
+iOS and Android apps that carry your brand experience into your customer's pocket. Native performance, cross-platform thinking.
+03   UI/UX Design
+Research-led, user-tested interfaces that are intuitive to navigate and designed to convert. Every screen purposeful.
+04   E-Commerce
+End-to-end e-commerce builds — storefront design, payment integration, inventory hooks and conversion optimisation. Ready to sell from day one.
+05   Chatbots and AI Agents
+Intelligent automations that qualify leads, handle queries and move customers through the funnel — 24/7, without adding headcount.
+
+B6 — Clients Section
+↳  Section eyebrow and descriptor. Current copy says "hospitality, wellness, finance, and founder-led brands." Remove finance — it is not your positioning and contradicts the strategy. Replace with the copy below.
+
+IN GOOD COMPANY
+
+A snapshot of the brands we work with — from global hospitality names to founder-led businesses across wellness, lifestyle and beyond.
+
+↳  Design note: Surface Novotel, Radisson Blu, Hindustan Unilever and Mickey Mehta prominently above the marquee row if layout allows. These four names do the heaviest credibility work.
+
+B7 — Outcomes / Proof Section
+↳  Section eyebrow and card copy updated. Current descriptor "A look at how we pair narrative, design, and performance" is good but reads passive. Sharpened below.
+
+PROOF OF CRAFT
+
+Real briefs. Real constraints. Real numbers. This is what integrated thinking actually delivers.
+
+↳  Outcome Card 01 — Hospitality. Your strongest vertical. Lead with it. Sharpen the pull quote.
+
+Hospitality & Experience
+Brand Repositioning + Performance Media
+A legacy property with falling occupancy and no coherent digital story. We rebuilt the positioning from scratch — new brand narrative, visual system, content strategy and a paid media funnel aligned to the new identity. Everything moved together.
+
+
+↳  Outcome Card 02 — Product & Performance. Demonstrates tech credibility to non-hospitality prospects.
+
+Product & Performance
+Design Systems + Growth Engineering
+A fast-growing brand with no product infrastructure. We built a component design system, a cross-platform mobile app and a performance dashboard — then handed the team a growth playbook they could actually execute independently.
+
+B8 — Selected Works
+↳  Section heading and card copy. Rename work cards to be specific and outcome-first — current names are generic ("Luxury Hospitality Growth"). Replace with descriptive project names.
+
+Selected Works
+Archive CTA:  View All  (update count as portfolio grows)
+
+01  /  Performance + Creative
+Hospitality Brand & Media Relaunch
++182% qualified booking inquiries in 90 days
+View case study  →
+02  /  Brand + Content
+Wellness Studio Repositioning & Voice
+3.4× engagement lift across owned channels
+View case study  →
+03  /  Social + Video
+Restaurant Visual Identity System
++126% organic reach, month-on-month growth
+View case study  →
+04  /  Ads + Funnel Design
+D2C Commerce Growth & Acquisition
+41% lower cost per acquisition on Meta
+View case study  →
+05  /  Growth + Automation
+Education Lead Generation Engine
+4.1× lead velocity achieved in 45 days
+View case study  →
+06  /  Experience + Commerce
+Retail Omnichannel Launch
++89% store-to-site conversion rate
+View case study  →
+
+B9 — About Section
+↳  URGENT FIX. Current copy: "At Bheard, we help brands grow with simple and effective marketing strategies. We focus on what actually works — getting you more visibility, more leads, and more customers." This is the single biggest brand mismatch on the site. A dark, kinetic, editorial agency should not describe itself like a Google Ads one-pager. Replace entirely with the copy below.
+
+ABOUT BHEARD
+
+Built for brands that deserve more than a template and a boost.
+
+We are an integrated agency. Brand strategy, creative production, and digital product engineering — one team, one building, one brief.
+
+Most agencies make you choose. Brand over here. Tech over there. Marketing somewhere else. You brief three different teams, wait for three different timelines, and wonder why nothing feels consistent.
+
+We built BHEARD because that model is broken. When your brand story, your campaigns and your product all move in the same direction — built by the same people — growth compounds. That's the only way we work.
+
+Our Brand Solutions practice is grounded in years of work with hospitality, wellness and lifestyle brands — categories where trust, emotion and experience are the product, not just the marketing. Our Tech Solutions practice builds web and mobile products for any business that's ready to scale.
+
+One brief. One team. One outcome.
+
+↳  Right-column belief cards — replace current generic stats with the three positioning statements below.
+
+FOUNDED
+Mumbai, 2024.
+Independent. Founder-led. Fully accountable.
+
+APPROACH
+Integrated by design.
+Brand, creative and tech built in one loop — not briefed out to three separate vendors.
+
+WHO WE WORK WITH
+Ambitious. Not necessarily large.
+From Radisson Blu to early-stage founders. Scale is irrelevant. Intent is everything.
+
+B10 — Final CTA Band
+↳  Dark full-width band. The conversion moment. Visitor has scrolled the full page — they are warm. Headline speaks directly to someone ready to act. Sub-line is the brand lock-up. Fix the "BEHEARD" typo — must have a space or dot.
+
+Your brand has a voice.
+Your business needs a product that works.
+Let's build both.
+
+BE SEEN  ·  BE FELT  ·  B HEARD
+Primary CTA:  Start a Project  →
+Secondary CTA:  or just say hello
+
+B11 — Footer
+↳  Two critical live fixes needed before any campaign drives traffic to this site.
+
+⚠  LIVE FIX 1 — CTA typo
+Current text: "READY TO BEHEARD?" — reads as one unrecognised word. Fix to: "READY TO B HEARD?" — with the dot and space as a brand treatment. Or style as the logo does: "READY TO B.HEARD?"
+
+⚠  LIVE FIX 2 — Placeholder address
+"121 Kinetic Blvd, Future City" is a placeholder that is live and visible. Remove immediately. Replace with real Mumbai address or remove the address line entirely. Clients and prospects will check — a fake address destroys credibility faster than any bad review.
+
+↳  Approved footer copy below — replace current generic descriptor.
+
+FOOTER DESCRIPTOR
+BHEARD is an integrated branding and tech agency in Mumbai. We build brand identities, run campaigns, and engineer digital products — for businesses that refuse to be background noise.
+
+FOOTER CTA HEADING — REPLACES "READY TO BEHEARD?"
+Ready to B Heard?
+We take on a focused number of new clients each quarter. Book a call — let's see if we're the right fit.
+
+COPYRIGHT LINE
+© 2025 BHEARD. All rights reserved.  ·  Privacy Policy  ·  Terms & Conditions
+
+SOCIAL LINKS
+Instagram  ·  LinkedIn  ·  Twitter / X
+
+  ✦  PART C — BRAND VOICE & WRITING STANDARDS  
+↳  Reference this before writing any content for BHEARD — website, ads, social, blogs, pitch decks.
+
+The Voice in One Sentence
+"A creative director who spent a decade at top agencies, left to back the brands being ignored, and has nothing left to prove."
+Tone Dials
+
+
+Five Non-Negotiable Rules
+
+1. Never open with "We help."
+Every average agency says "We help businesses grow." It is the whitest noise in marketing. Lead with the tension, the outcome, or the insight. The reader will know you're offering help.
+2. Short sentences win.
+Every long sentence is a decision unmade. One idea. One sentence. Period. Then move.
+3. Active voice. Every time.
+"We build brands" not "Brands are built by our team." Passive voice is the enemy of energy. It makes confident work sound uncertain.
+4. Earn every adjective.
+"Seamless." "World-class." "Innovative." Gut-check each one. Does the sentence collapse without it? No? Cut it. Earned adjectives carry weight. Unearned ones erode it.
+5. Let the work carry the ego.
+Do not tell the reader how good you are. Show the outcome. The number. The before and after. Confidence comes from specificity, not superlatives.
+
+Words We Use vs. Words We Avoid
+
+
+SEO Writing Standards
+
+→  Primary keyword in the first 100 words of every page. Placed naturally — never forced into a sentence that sounds unnatural.
+→  One H1 per page only. H2 for major sections. H3 for service items and sub-sections. Never skip heading levels.
+→  Every image needs a descriptive alt tag. Format: [Subject + context + "BHEARD Mumbai"]. Example: "Hotel social media campaign creative — BHEARD Mumbai".
+→  Every service name mentioned in body copy should hyperlink to its dedicated service page once it exists.
+→  Meta descriptions are unique for every page. Homepage meta is written above — do not reuse it elsewhere.
+→  Blog posts: minimum 800 words, one long-tail keyword target, one internal link to a relevant service page, one CTA at the end.
+→  Page speed is a ranking signal. Compress all images before upload. Use WebP. Lazy load below-the-fold content.
+→  Fix the duplicate Tech Solutions section rendering on the live site — duplicate content is penalised by Google.
+
+
+End of Document  ·  BHEARD Homepage Copy & SEO  ·  bheard.in  ·  2025

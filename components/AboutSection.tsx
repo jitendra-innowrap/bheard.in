@@ -26,23 +26,33 @@ export default function AboutSection() {
               <div className="w-24 h-1 bg-primary mb-8" />
             </div>
           </div>
-          <div className="flex flex-col gap-16 md:pt-32">
+          <div className="flex flex-col gap-10 md:pt-32 md:gap-12">
             <p className="font-body text-2xl md:text-4xl font-light text-neutral-700 leading-tight">
-              At{" "}
-              <span className="text-neutral-900 font-bold italic">Bheard</span>,
-              we help brands grow with simple and effective marketing strategies.
-              We focus on what actually works — getting you more visibility, more
-              leads, and{" "}
-              <span className="text-primary-fixed">more customers.</span>.
+              <span className="text-neutral-900 font-bold italic">BHeard</span>{" "}
+              is a brand and technology studio helping businesses build{" "}
+              <span className="text-primary-fixed">stronger digital presence</span>{" "}
+              and customer experiences.
             </p>
-            <p className="font-body text-xl md:text-2xl text-on-surface-variant leading-relaxed">
-              From social media to paid ads and branding, we create campaigns
-              that connect with your audience and drive real business growth.
+            <p className="font-body text-lg md:text-xl text-on-surface-variant leading-relaxed">
+              We work across branding, content, campaigns, websites, and mobile
+              applications - bringing strategy, creative, and technology
+              together under one team.
             </p>
-            <div className="mt-12 overflow-hidden rounded-lg">
+            <p className="font-body text-lg md:text-xl text-on-surface-variant leading-relaxed">
+              Our work is grounded in years of experience with hospitality,
+              luxury, consumer, and lifestyle brands - categories where trust,
+              emotion, and experience are often as important as the product
+              itself.
+            </p>
+            <p className="font-body text-lg md:text-xl text-on-surface-variant leading-relaxed">
+              We think about brands as experiences, not just identities. That&apos;s
+              why our focus goes beyond visibility - creating communication and
+              digital experiences people remember and return to.
+            </p>
+            <div className="mt-6 overflow-hidden rounded-lg">
               <div className="relative w-full aspect-[16/10]">
                 <Image
-                  alt="Bheard team collaborating on brand strategy"
+                  alt="BHEARD team collaborating on brand strategy - BHEARD Mumbai"
                   className="w-full grayscale hover:grayscale-0 transition-all duration-700 hover:scale-105 object-cover"
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80"
                   fill

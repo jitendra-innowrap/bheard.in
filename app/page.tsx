@@ -9,6 +9,7 @@ import OurBeliefSection from "@/components/OurBeliefSection";
 import ScrollRevealEffects from "@/components/ScrollRevealEffects";
 import ServicesSection from "@/components/ServicesSection";
 import ServicesVariantOne from "@/components/ServicesVariantOne";
+import TickerStrip from "@/components/TickerStrip";
 import WorkSection from "@/components/WorkSection";
 
 export const metadata: Metadata = {
@@ -94,6 +95,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }} />
       <Navbar />
       <main>
+        <TickerStrip />
         <HeroSection />
         <OurBeliefSection />
         <ServicesSection />

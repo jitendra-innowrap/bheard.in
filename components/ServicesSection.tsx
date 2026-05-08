@@ -16,20 +16,65 @@ import { prefersReducedMotion } from "@/lib/motion/animations";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const brandServices = [
-  "Social Media Management",
-  "Content and Copywriting",
-  "Video Editing and Animations",
-  "Graphic Design and Illustrations",
-  "Campaign Planning",
+type ServiceItem = {
+  name: string;
+  description: string;
+};
+
+const brandServices: ServiceItem[] = [
+  {
+    name: "Social Media Management",
+    description:
+      "Strategy, content calendars, community management and consistent channel growth. We run your platforms so you can run your business.",
+  },
+  {
+    name: "Content and Copywriting",
+    description:
+      "Brand voice, campaign narratives, captions, scripts and website copy. Every word intentional. Every line earning its place.",
+  },
+  {
+    name: "Video Editing and Animations",
+    description:
+      "Reels, brand films, product launches and motion graphics. Crafted for retention, built to travel across channels.",
+  },
+  {
+    name: "Graphic Design and Illustrations",
+    description:
+      "Visual identity systems, social creatives, collaterals and packaging design. Consistent across every touchpoint.",
+  },
+  {
+    name: "Campaign Planning",
+    description:
+      "Full-funnel campaign strategy - from the insight and big idea to the go-live calendar. Built around your goals, not a generic playbook.",
+  },
 ];
 
-const techServices = [
-  "Custom Web Development",
-  "Custom Mobile App Development",
-  "UI/UX Design",
-  "E-Commerce",
-  "Chatbots and AI Agents",
+const techServices: ServiceItem[] = [
+  {
+    name: "Custom Web Development",
+    description:
+      "Fast, secure, conversion-optimised websites built from the ground up. No templates. No off-the-shelf compromises.",
+  },
+  {
+    name: "Custom Mobile App Development",
+    description:
+      "iOS and Android apps that carry your brand experience into your customer's pocket. Native performance, cross-platform thinking.",
+  },
+  {
+    name: "UI/UX Design",
+    description:
+      "Research-led, user-tested interfaces that are intuitive to navigate and designed to convert. Every screen purposeful.",
+  },
+  {
+    name: "E-Commerce",
+    description:
+      "End-to-end e-commerce builds - storefront design, payment integration, inventory hooks and conversion optimisation. Ready to sell from day one.",
+  },
+  {
+    name: "Chatbots and AI Agents",
+    description:
+      "Intelligent automations that qualify leads, handle queries and move customers through the funnel - 24/7, without adding headcount.",
+  },
 ];
 
 function PaneBlock({
@@ -40,7 +85,7 @@ function PaneBlock({
 }: {
   title: string;
   description: string;
-  services: string[];
+  services: ServiceItem[];
   variant?: "brand" | "tech";
 }) {
   const isTech = variant === "tech";
@@ -61,29 +106,42 @@ function PaneBlock({
       <ul className="mt-8 space-y-2">
         {services.map((service, i) => (
           <li
-            key={service}
+            key={service.name}
             data-pane-reveal
-            className={`group flex items-center gap-4 rounded-sm px-4 py-3.5 text-sm font-semibold transition-all duration-300 md:text-base ${
+            className={`group flex flex-col rounded-sm text-sm transition-all duration-300 md:text-base ${
               isTech
-                ? "border border-white/10 bg-white/5 text-white hover:border-white/25 hover:bg-white/10"
-                : "border border-outline-variant/60 bg-surface text-neutral-900 hover:border-primary/40 hover:bg-primary/5"
+                ? "border border-white/10 bg-white/5 text-white hover:border-white/25 hover:bg-white/10 focus-within:border-white/25 focus-within:bg-white/10"
+                : "border border-outline-variant/60 bg-surface text-neutral-900 hover:border-primary/40 hover:bg-primary/5 focus-within:border-primary/40 focus-within:bg-primary/5"
             }`}
           >
-            <span
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-xs font-black transition-colors duration-300 ${
-                isTech
-                  ? "bg-white/10 text-white group-hover:bg-white/20"
-                  : "bg-primary/10 text-primary group-hover:bg-primary/20"
-              }`}
-            >
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <span className="flex-1">{service}</span>
-            <ArrowRight
-              className={`h-4 w-4 -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 ${
-                isTech ? "text-white/60" : "text-primary"
-              }`}
-            />
+            <div className="flex items-center gap-4 px-4 py-3.5 font-semibold">
+              <span
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-xs font-black transition-colors duration-300 ${
+                  isTech
+                    ? "bg-white/10 text-white group-hover:bg-white/20"
+                    : "bg-primary/10 text-primary group-hover:bg-primary/20"
+                }`}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="flex-1">{service.name}</span>
+              <ArrowRight
+                className={`h-4 w-4 -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100 ${
+                  isTech ? "text-white/60" : "text-primary"
+                }`}
+              />
+            </div>
+            <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-hover:grid-rows-[1fr] group-focus-within:grid-rows-[1fr] motion-reduce:duration-0">
+              <div className="overflow-hidden">
+                <p
+                  className={`px-4 pb-3.5 text-xs leading-relaxed md:text-sm ${
+                    isTech ? "text-white/65" : "text-on-surface-variant"
+                  }`}
+                >
+                  {service.description}
+                </p>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
@@ -193,6 +251,7 @@ export default function ServicesSection() {
   return (
     <section
       ref={sectionRef}
+      id="services"
       className={`bg-surface ${sectionPageX} ${sectionStackTop} pb-20 md:pb-24`}
     >
       <SectionCharReveal
@@ -202,7 +261,7 @@ export default function ServicesSection() {
         className={`mx-auto max-w-7xl ${sectionTitleMarginCompact} lg:mb-14`}
         eyebrow="How we work"
         title="Our services"
-        description="Strategy, creative, and engineering in one loop—so positioning, campaigns, and product experiences stay aligned from brief to launch."
+        description="Strategy, content, design, and technology connected to create brands and digital experiences that move together."
       />
 
       <div className="mx-auto max-w-7xl">
@@ -215,7 +274,7 @@ export default function ServicesSection() {
             <div className="border-b border-outline-variant/60 p-8">
               <PaneBlock
                 title="Brand Solutions"
-                description="Story, content, and campaign systems that build trust and long-term recall."
+                description="Creative systems, content and campaign strategy for brands that want to be remembered - not just seen."
                 services={brandServices}
                 variant="brand"
               />
@@ -223,7 +282,7 @@ export default function ServicesSection() {
             <div className="bg-gradient-to-br from-[#3d1e00] via-[#4a2508] to-[#2d1600] p-8">
               <PaneBlock
                 title="Tech Solutions"
-                description="Scalable digital products and automations engineered for measurable growth."
+                description="Digital products and intelligent tools, engineered for any industry. We build the platforms your brand operates on - and the systems that scale it."
                 services={techServices}
                 variant="tech"
               />
@@ -242,7 +301,7 @@ export default function ServicesSection() {
               <div ref={brandContentRef} className="min-w-[500px] max-w-[760px] p-10">
                 <PaneBlock
                   title="Brand Solutions"
-                  description="Story, content, and campaign systems that build trust and long-term recall."
+                  description="Creative systems, content and campaign strategy for brands that want to be remembered - not just seen."
                   services={brandServices}
                   variant="brand"
                 />
@@ -260,7 +319,7 @@ export default function ServicesSection() {
               <div ref={techContentRef} className="ml-auto min-w-[500px] max-w-[760px] p-10">
                 <PaneBlock
                   title="Tech Solutions"
-                  description="Scalable digital products and automations engineered for measurable growth."
+                  description="Digital products and intelligent tools, engineered for any industry. We build the platforms your brand operates on - and the systems that scale it."
                   services={techServices}
                   variant="tech"
                 />

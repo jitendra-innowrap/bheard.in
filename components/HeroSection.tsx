@@ -1,12 +1,19 @@
 "use client";
 
 import "@/lib/motion/config";
+import Link from "next/link";
 import { useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ArrowDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(useGSAP);
+
+const HERO_STATS = [
+  { value: "10+", label: "Years of Experience" },
+  { value: "50+", label: "Brands Partnered With" },
+  { value: "200+", label: "Campaigns & Digital Launches" },
+] as const;
 
 const HERO_TEXT = "CAPTURING\nVOICE IN THE\nNOISE.";
 
@@ -56,6 +63,7 @@ export default function HeroSection() {
       gsap.set(".hero-letter", { opacity: 0, y: 60 });
       gsap.set('[data-anim="hero-subtext"]', { opacity: 0, y: 40 });
       gsap.set('[data-anim="hero-cta"]', { opacity: 0, y: 60 });
+      gsap.set('[data-anim="hero-stat"]', { opacity: 0, y: 32 });
 
       const tl = gsap.timeline({ defaults: { force3D: true } });
 
@@ -93,6 +101,12 @@ export default function HeroSection() {
           { y: 56, opacity: 0 },
           { y: 0, opacity: 1, ease: "power3.out", duration: 0.55 },
           "+=0.12"
+        )
+        .fromTo(
+          '[data-anim="hero-stat"]',
+          { y: 32, opacity: 0 },
+          { y: 0, opacity: 1, ease: "power3.out", duration: 0.5, stagger: 0.08 },
+          "+=0.08"
         );
 
       gsap.to('[data-anim="hero-shape"]', {
@@ -150,14 +164,14 @@ export default function HeroSection() {
   return (
     <section
       ref={heroRef}
-      className="relative isolate flex min-h-screen items-end overflow-hidden px-8 pb-24 pt-32 md:pb-40"
+      className="relative isolate flex min-h-screen items-end overflow-hidden px-8 pb-24 pt-12 md:pb-40"
     >
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-surface-container-low to-surface-container-lowest" />
       <div
         data-anim="hero-shape"
         className="pointer-events-none absolute top-1/4 right-0 z-0 h-2/3 w-2/3 rounded-full bg-primary/10 blur-[160px]"
       />
-      <div className="flex w-screen h-screen top-0 left-0  absolute">
+      <div className="flex w-screen h-[calc(100vh-100px)] top-0 left-0  absolute">
         <h2
           data-anim="hero-bheard"
           style={{ zIndex: 3 }}
@@ -183,7 +197,7 @@ export default function HeroSection() {
             data-anim="hero-eyebrow"
             className="mb-8 inline-block translate-y-7 bg-surface-container-high px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100"
           >
-            The Future of Attention
+            Integrated Branding &amp; Tech Agency &nbsp;·&nbsp; Mumbai, India
           </span>
           <h1 className="font-headline kinetic-text mb-12 text-[clamp(3.5rem,12vw,10rem)] font-black text-neutral-900">
             {heroLetters}
@@ -194,19 +208,45 @@ export default function HeroSection() {
             data-anim="hero-subtext"
             className="mb-8 translate-y-10 font-body text-lg leading-relaxed text-on-surface-variant opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100 md:text-xl"
           >
-            We help businesses get more customers through smart marketing,
-            better branding, and high-performing ads.
+            One agency. Brand strategy and technology under one roof. 
           </p>
           <div
             data-anim="hero-cta"
-            className="pointer-events-auto flex translate-y-[60px] cursor-pointer items-center gap-4 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100 group"
+            className="pointer-events-auto flex translate-y-[60px] flex-col items-start gap-4 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100 sm:flex-row sm:items-center"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-outline-variant transition-all group-hover:border-primary group-hover:bg-primary">
-              <ArrowDown className="h-5 w-5 text-neutral-900" />
-            </div>
-            <span className="font-headline font-bold uppercase tracking-tighter text-neutral-900">
-              Discover our kinetic engine
-            </span>
+            <Link
+              href="#work"
+              className="group inline-flex items-center gap-3 rounded-full bg-neutral-900 px-6 py-3.5 font-headline text-sm font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-primary hover:text-on-primary"
+            >
+              <span>See Our Work</span>
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            <Link
+              href="#services"
+              className="group inline-flex items-center gap-2 font-headline text-sm font-bold uppercase tracking-widest text-neutral-900 transition-colors duration-300 hover:text-primary"
+            >
+              <span className="border-b border-neutral-900/40 pb-0.5 transition-colors duration-300 group-hover:border-primary">
+                Explore What We Do
+              </span>
+            </Link>
+          </div>
+        </div>
+        <div className="md:col-span-12">
+          <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden border border-outline-variant/60 bg-outline-variant/40 sm:grid-cols-3">
+            {HERO_STATS.map((stat) => (
+              <div
+                key={stat.label}
+                data-anim="hero-stat"
+                className="flex flex-col gap-1 bg-surface px-6 py-5 opacity-0 motion-reduce:opacity-100"
+              >
+                <p className="font-headline text-3xl font-black text-neutral-900 md:text-4xl">
+                  {stat.value}
+                </p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant md:text-sm">
+                  {stat.label}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

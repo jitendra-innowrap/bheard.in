@@ -13,9 +13,14 @@ import { prefersReducedMotion } from "@/lib/motion/animations";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const socialLinks = [
-  { label: "Instagram", href: "#" },
-  { label: "LinkedIn", href: "#" },
-  { label: "Twitter", href: "#" },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/bheard.in",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/bheard",
+  },
 ] as const;
 
 export default function Footer() {
@@ -73,8 +78,9 @@ export default function Footer() {
             />
           </div>
           <p className="max-w-md font-body text-lg text-neutral-600">
-            Bheard is a digital marketing agency helping businesses grow through
-            branding, social media, and performance marketing.
+            BHEARD is an integrated branding and tech agency in Mumbai. We
+            build brand identities, run campaigns, and engineer digital
+            products - for businesses that refuse to be background noise.
           </p>
         </div>
         <div data-footer-reveal className="md:col-span-3">
@@ -87,6 +93,8 @@ export default function Footer() {
                 <Link
                   className="font-headline text-xl uppercase text-neutral-600 transition-colors duration-400 ease-out hover:text-neutral-900"
                   href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {link.label}
                 </Link>
@@ -101,7 +109,9 @@ export default function Footer() {
           <p className="mb-2 font-headline text-2xl lowercase text-neutral-900">
             hello@bheard.in
           </p>
-          <p className="text-neutral-600">121 Kinetic Blvd, Future City</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-neutral-500">
+            Mumbai, India
+          </p>
         </div>
       </div>
       <div className="relative overflow-visible border-t border-outline-variant/10 pt-16">

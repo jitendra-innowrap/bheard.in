@@ -3,12 +3,7 @@
 import Image from "next/image";
 import { useMemo } from "react";
 import LogoLoop, { type LogoItem } from "@/components/LogoLoop";
-import SectionCharReveal from "@/components/motion/SectionCharReveal";
-import {
-  sectionBandY,
-  sectionPageX,
-  sectionTitleMarginCompact,
-} from "@/components/system/sectionTheme";
+import { sectionBandY, sectionPageX } from "@/components/system/sectionTheme";
 
 /** Slower base marquee + gentler hover crawl (px/s in LogoLoop RAF loop) */
 const STRIP_SPEED = 68;
@@ -20,17 +15,19 @@ type ClientLogo = {
 };
 
 const rowOneLogos: ClientLogo[] = [
+  { src: "/assets/client-logos/accor.png", alt: "Accor" },
   { src: "/assets/client-logos/bnp-paribas.webp", alt: "BNP Paribas" },
   { src: "/assets/client-logos/broward-college.webp", alt: "Broward College" },
-  { src: "/assets/client-logos/chef-deepa.webp", alt: "Chef Deepa" },
+  { src: "/assets/client-logos/caper-travel.png", alt: "Caper Travel" },
+  { src: "/assets/client-logos/curly-tales.png", alt: "Curly Tales" },
   { src: "/assets/client-logos/dakshin-culture-curry.webp", alt: "Dakshin Culture Curry" },
   { src: "/assets/client-logos/devaaya.webp", alt: "Devaaya" },
   { src: "/assets/client-logos/diva-maharashtracha.webp", alt: "Diva Maharashtracha" },
-  { src: "/assets/client-logos/dr-suhas.webp", alt: "Dr. Suhas" },
   { src: "/assets/client-logos/goa-portuguesa.webp", alt: "Goa Portuguesa" },
+  { src: "/assets/client-logos/goa-tourism.png", alt: "Goa Tourism" },
   { src: "/assets/client-logos/gsbr.webp", alt: "GSBR" },
   { src: "/assets/client-logos/hindustan-unilever.webp", alt: "Hindustan Unilever" },
-  { src: "/assets/client-logos/indian-princess.webp", alt: "Indian Princess" },
+  { src: "/assets/client-logos/itc.png", alt: "ITC" },
   { src: "/assets/client-logos/kadkani.webp", alt: "Kadkani" },
 ];
 
@@ -76,19 +73,9 @@ export default function ClientLogos() {
 
   return (
     <section
+      aria-label="Clients we work with"
       className={`relative overflow-hidden bg-surface-container-lowest ${sectionPageX} ${sectionBandY}`}
     >
-      <SectionCharReveal
-        as="div"
-        layout="flow"
-        scrubEnd="+=34%"
-        className={`mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-6 md:flex-row md:items-end ${sectionTitleMarginCompact}`}
-        eyebrow="In good company"
-        title="Our clients"
-        description="A snapshot of teams we ship with—hospitality, wellness, finance, and founder-led brands across markets."
-        descriptionClassName="mt-4 max-w-2xl font-body text-sm leading-relaxed text-on-surface-variant md:text-base"
-      />
-
       <div className="relative space-y-5 md:space-y-6">
         <LogoLoop
           logos={logosRowOne}
