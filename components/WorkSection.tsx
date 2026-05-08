@@ -17,8 +17,8 @@ gsap.registerPlugin(useGSAP);
 const projects = [
   {
     id: "01",
-    title: "Luxury Hospitality Growth",
-    metric: "+182% qualified inquiries",
+    title: "Hospitality Brand & Media Relaunch",
+    metric: "+182% qualified booking inquiries in 90 days",
     category: "Performance + Creative",
     image:
       "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1800&q=80",
@@ -27,8 +27,8 @@ const projects = [
   },
   {
     id: "02",
-    title: "Wellness Brand Repositioning",
-    metric: "3.4x engagement lift",
+    title: "Wellness Studio Repositioning & Voice",
+    metric: "3.4× engagement lift across owned channels",
     category: "Brand + Content",
     image:
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
@@ -36,8 +36,8 @@ const projects = [
   },
   {
     id: "03",
-    title: "Restaurant Visual Story System",
-    metric: "+126% organic reach",
+    title: "Restaurant Visual Identity System",
+    metric: "+126% organic reach, month-on-month growth",
     category: "Social + Video",
     image:
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
@@ -45,8 +45,8 @@ const projects = [
   },
   {
     id: "04",
-    title: "D2C Commerce Acceleration",
-    metric: "41% lower acquisition cost",
+    title: "D2C Commerce Growth & Acquisition",
+    metric: "41% lower cost per acquisition on Meta",
     category: "Ads + Funnel Design",
     image:
       "https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1400&q=80",
@@ -54,8 +54,8 @@ const projects = [
   },
   {
     id: "05",
-    title: "Education Lead Engine",
-    metric: "4.1x lead velocity",
+    title: "Education Lead Generation Engine",
+    metric: "4.1× lead velocity achieved in 45 days",
     category: "Growth + Automation",
     image:
       "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1400&q=80",
@@ -64,7 +64,7 @@ const projects = [
   {
     id: "06",
     title: "Retail Omnichannel Launch",
-    metric: "+89% store-to-site conversions",
+    metric: "+89% store-to-site conversion rate",
     category: "Experience + Commerce",
     image:
       "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1400&q=80",
@@ -159,6 +159,7 @@ function WorkBentoCard({
 export default function WorkSection() {
   return (
     <section
+      id="work"
       className={`bg-surface-container-lowest ${sectionPageX} pt-20 md:pt-24 ${sectionStackBottom}`}
     >
       <SectionCharReveal
@@ -169,9 +170,7 @@ export default function WorkSection() {
         className={`mx-auto flex max-w-7xl flex-col items-end justify-between gap-8 md:flex-row ${sectionTitleMarginDisplay}`}
         title={"Selected\nworks"}
         trailing={
-          <p className="max-w-sm border-b border-primary pb-2 font-body text-xs font-bold uppercase tracking-widest text-neutral-700">
-            View Archive (24)
-          </p>
+          ""
         }
       />
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 sm:gap-4 md:grid-cols-12 md:gap-4">

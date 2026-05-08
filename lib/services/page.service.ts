@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/db/prisma";
+import { connectToDatabase } from "@/lib/db/mongoose";
+import { PageModel } from "@/lib/db/models";
 import type { PageUpdateInput } from "@/lib/validators/page.validator";
 
 function requireDb() {
@@ -7,28 +8,50 @@ function requireDb() {
   }
 }
 
+function buildPageTitleFromSlug(slug: string) {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 export async function getPageBySlug(slug: string) {
   requireDb();
-  return prisma.page.findUnique({ where: { slug } });
+  await connectToDatabase();
+  const row = await PageModel.findOne({ slug });
+  return row ? row.toJSON() : null;
 }
 
 export async function listAllPages() {
   requireDb();
-  return prisma.page.findMany({ orderBy: { updatedAt: "desc" } });
+  await connectToDatabase();
+  const rows = await PageModel.find({}).sort({ updatedAt: -1 });
+  return rows.map((row) => row.toJSON());
 }
 
 export async function upsertPage(slug: string, input: PageUpdateInput) {
   requireDb();
-  return prisma.page.upsert({
-    where: { slug },
-    create: {
-      slug,
-      title: input.title ?? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-      content: input.content,
+  await connectToDatabase();
+
+  const updateData: Record<string, unknown> = {
+    content: input.content,
+  };
+  if (input.title) {
+    updateData.title = input.title;
+  }
+
+  const row = await PageModel.findOneAndUpdate(
+    { slug },
+    {
+      $set: updateData,
+      $setOnInsert: {
+        slug,
+        title: input.title ?? buildPageTitleFromSlug(slug),
+      },
     },
-    update: {
-      ...(input.title ? { title: input.title } : {}),
-      content: input.content,
-    },
-  });
+    { upsert: true, new: true }
+  );
+
+  return row ? row.toJSON() : null;
 }

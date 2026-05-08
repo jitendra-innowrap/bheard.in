@@ -55,7 +55,7 @@ export default function ServicesVariantOne() {
           className={sectionTitleMarginCompact}
           eyebrow="Proof of craft"
           title="Outcomes in the wild"
-          description="A look at how we pair narrative, design, and performance—without repeating the service catalog above. Real constraints, measurable deltas, and the craft behind the delivery."
+          description="Real briefs. Real constraints. Real numbers. This is what integrated thinking actually delivers."
         />
 
         <div className="space-y-4 md:space-y-4">
@@ -79,10 +79,10 @@ export default function ServicesVariantOne() {
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <figcaption className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  Hospitality & experience
+                  Hospitality &amp; experience
                 </p>
                 <p className="mt-2 font-headline text-2xl font-black uppercase leading-tight text-surface md:text-3xl">
-                  Reposition the stay without losing operational truth.
+                  Brand repositioning + performance media, moving as one system.
                 </p>
               </figcaption>
             </figure>
@@ -130,10 +130,10 @@ export default function ServicesVariantOne() {
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <figcaption className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  Product & performance
+                  Product &amp; performance
                 </p>
                 <p className="mt-2 font-headline text-2xl font-black uppercase leading-tight text-surface md:text-3xl">
-                  Design systems that engineers can ship—and marketers can steer.
+                  Design systems and growth engineering, handed off as a playbook.
                 </p>
               </figcaption>
             </figure>
