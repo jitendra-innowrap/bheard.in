@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/db/prisma";
+import { connectToDatabase } from "@/lib/db/mongoose";
+import { ContactLeadModel } from "@/lib/db/models";
 import type { ContactLeadInput } from "@/lib/validators/contactLead.validator";
 
 function requireDb() {
@@ -14,24 +15,24 @@ export type CreateContactLeadInput = ContactLeadInput & {
 
 export async function createContactLead(input: CreateContactLeadInput) {
   requireDb();
-  return prisma.contactLead.create({
-    data: {
-      fullName: input.fullName,
-      email: input.email,
-      phone: input.phone || null,
-      company: input.company || null,
-      message: input.message,
-      sourcePage: input.sourcePage || null,
-      ipAddress: input.ipAddress || null,
-      userAgent: input.userAgent || null,
-    },
+  await connectToDatabase();
+  const row = await ContactLeadModel.create({
+    fullName: input.fullName,
+    email: input.email,
+    phone: input.phone || null,
+    company: input.company || null,
+    message: input.message,
+    sourcePage: input.sourcePage || null,
+    ipAddress: input.ipAddress || null,
+    userAgent: input.userAgent || null,
   });
+  return row.toJSON();
 }
 
 export async function listContactLeads() {
   requireDb();
-  return prisma.contactLead.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  await connectToDatabase();
+  const rows = await ContactLeadModel.find({}).sort({ createdAt: -1 });
+  return rows.map((row) => row.toJSON());
 }
 

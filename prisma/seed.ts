@@ -1,125 +1,110 @@
-import { PrismaClient } from "@prisma/client";
 import { seedBlogPosts } from "@/lib/content/blogSeed";
 import { seedCareers } from "@/lib/content/careersSeed";
 import { seedStories } from "@/lib/content/storiesSeed";
 import { seedPages } from "@/lib/content/pagesSeed";
-
-const prisma = new PrismaClient();
+import { connectToDatabase } from "@/lib/db/mongoose";
+import { BlogPostModel, CareerModel, PageModel, SuccessStoryModel } from "@/lib/db/models";
 
 async function main() {
+  await connectToDatabase();
+
   for (const post of seedBlogPosts) {
-    await prisma.blogPost.upsert({
-      where: { slug: post.slug },
-      update: {
-        title: post.title,
-        subtitle: (post as any).subtitle ?? null,
-        author: (post as any).author ?? "BHeard Editorial",
-        excerpt: post.excerpt,
-        thumbnailUrl: (post as any).thumbnailUrl ?? null,
-        thumbnailAlt: (post as any).thumbnailAlt ?? null,
-        content: post.content,
-        category: post.category,
-        readTime: post.readTime,
-        published: post.published,
-        publishedAt: post.publishedAt,
+    await BlogPostModel.findOneAndUpdate(
+      { slug: post.slug },
+      {
+        $set: {
+          title: post.title,
+          subtitle: (post as any).subtitle ?? null,
+          author: (post as any).author ?? "BHeard Editorial",
+          excerpt: post.excerpt,
+          thumbnailUrl: (post as any).thumbnailUrl ?? null,
+          thumbnailAlt: (post as any).thumbnailAlt ?? null,
+          content: post.content,
+          category: post.category,
+          readTime: post.readTime,
+          published: post.published,
+          publishedAt: post.publishedAt,
+        },
+        $setOnInsert: {
+          slug: post.slug,
+          showAuthorDetails: true,
+        },
       },
-      create: {
-        slug: post.slug,
-        title: post.title,
-        subtitle: (post as any).subtitle ?? null,
-        author: (post as any).author ?? "BHeard Editorial",
-        excerpt: post.excerpt,
-        thumbnailUrl: (post as any).thumbnailUrl ?? null,
-        thumbnailAlt: (post as any).thumbnailAlt ?? null,
-        content: post.content,
-        category: post.category,
-        readTime: post.readTime,
-        published: post.published,
-        publishedAt: post.publishedAt,
-      },
-    });
+      { upsert: true, new: true }
+    );
   }
 
   for (const role of seedCareers) {
-    await prisma.career.upsert({
-      where: { slug: role.slug },
-      update: {
-        title: role.title,
-        department: role.department,
-        type: role.type,
-        location: role.location,
-        description: role.description,
-        active: role.active,
+    await CareerModel.findOneAndUpdate(
+      { slug: role.slug },
+      {
+        $set: {
+          title: role.title,
+          department: role.department,
+          type: role.type,
+          location: role.location,
+          description: role.description,
+          active: role.active,
+        },
+        $setOnInsert: {
+          slug: role.slug,
+        },
       },
-      create: {
-        slug: role.slug,
-        title: role.title,
-        department: role.department,
-        type: role.type,
-        location: role.location,
-        description: role.description,
-        active: role.active,
-      },
-    });
+      { upsert: true, new: true }
+    );
   }
 
   for (const story of seedStories) {
-    await prisma.successStory.upsert({
-      where: { slug: story.slug },
-      update: {
-        title: story.title,
-        industry: story.industry,
-        listImage: (story as any).listImage ?? null,
-        heroImage: (story as any).heroImage ?? null,
-        caseData: (story as any).caseData ?? null,
-        summary: story.summary,
-        about: story.about,
-        challenge: story.challenge,
-        solution: story.solution,
-        results: story.results,
-        contactCta: story.contactCta,
-        published: story.published,
+    await SuccessStoryModel.findOneAndUpdate(
+      { slug: story.slug },
+      {
+        $set: {
+          title: story.title,
+          industry: story.industry,
+          listImage: (story as any).listImage ?? null,
+          heroImage: (story as any).heroImage ?? null,
+          caseData: (story as any).caseData ?? null,
+          summary: story.summary,
+          about: story.about,
+          challenge: story.challenge,
+          solution: story.solution,
+          results: story.results,
+          contactCta: story.contactCta,
+          published: story.published,
+        },
+        $setOnInsert: {
+          slug: story.slug,
+        },
       },
-      create: {
-        slug: story.slug,
-        title: story.title,
-        industry: story.industry,
-        listImage: (story as any).listImage ?? null,
-        heroImage: (story as any).heroImage ?? null,
-        caseData: (story as any).caseData ?? null,
-        summary: story.summary,
-        about: story.about,
-        challenge: story.challenge,
-        solution: story.solution,
-        results: story.results,
-        contactCta: story.contactCta,
-        published: story.published,
-      },
-    });
+      { upsert: true, new: true }
+    );
   }
 
   for (const page of seedPages) {
-    await prisma.page.upsert({
-      where: { slug: page.slug },
-      update: {
-        title: page.title,
-        content: page.content,
+    await PageModel.findOneAndUpdate(
+      { slug: page.slug },
+      {
+        $set: {
+          title: page.title,
+          content: page.content,
+        },
+        $setOnInsert: {
+          slug: page.slug,
+        },
       },
-      create: {
-        slug: page.slug,
-        title: page.title,
-        content: page.content,
-      },
-    });
+      { upsert: true, new: true }
+    );
   }
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    const mongoose = await import("mongoose");
+    await mongoose.default.disconnect();
   })
   .catch(async (error) => {
     console.error(error);
-    await prisma.$disconnect();
+    const mongoose = await import("mongoose");
+    await mongoose.default.disconnect();
     process.exit(1);
   });

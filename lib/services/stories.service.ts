@@ -1,4 +1,6 @@
-import { prisma } from "@/lib/db/prisma";
+import { Types } from "mongoose";
+import { connectToDatabase } from "@/lib/db/mongoose";
+import { SuccessStoryModel } from "@/lib/db/models";
 import type { StoryInput, StoryUpdateInput } from "@/lib/validators/stories.validator";
 
 function requireDb() {
@@ -9,43 +11,61 @@ function requireDb() {
 
 export async function listPublishedStories() {
   requireDb();
-  return prisma.successStory.findMany({
-    where: { published: true },
-    orderBy: { updatedAt: "desc" },
-  });
+  await connectToDatabase();
+  const rows = await SuccessStoryModel.find({ published: true }).sort({ updatedAt: -1 });
+  return rows.map((row) => row.toJSON());
 }
 
 export async function listAllStories() {
   requireDb();
-  return prisma.successStory.findMany({ orderBy: { updatedAt: "desc" } });
+  await connectToDatabase();
+  const rows = await SuccessStoryModel.find({}).sort({ updatedAt: -1 });
+  return rows.map((row) => row.toJSON());
 }
 
 export async function getStoryBySlug(slug: string) {
   requireDb();
-  return prisma.successStory.findUnique({ where: { slug } });
+  await connectToDatabase();
+  const row = await SuccessStoryModel.findOne({ slug });
+  return row ? row.toJSON() : null;
 }
 
 export async function getStoryById(id: string) {
   requireDb();
-  return prisma.successStory.findUnique({ where: { id } });
+  await connectToDatabase();
+  if (!Types.ObjectId.isValid(id)) return null;
+  const row = await SuccessStoryModel.findById(id);
+  return row ? row.toJSON() : null;
 }
 
 export async function createStory(input: StoryInput) {
   requireDb();
-  return prisma.successStory.create({ data: input });
+  await connectToDatabase();
+  const row = await SuccessStoryModel.create(input);
+  return row.toJSON();
 }
 
 export async function updateStoryBySlug(slug: string, input: StoryUpdateInput) {
   requireDb();
-  return prisma.successStory.update({ where: { slug }, data: input });
+  await connectToDatabase();
+  const row = await SuccessStoryModel.findOneAndUpdate({ slug }, { $set: input }, { new: true });
+  if (!row) throw new Error("Story not found");
+  return row.toJSON();
 }
 
 export async function updateStoryById(id: string, input: StoryUpdateInput) {
   requireDb();
-  return prisma.successStory.update({ where: { id }, data: input });
+  await connectToDatabase();
+  if (!Types.ObjectId.isValid(id)) throw new Error("Invalid story id");
+  const row = await SuccessStoryModel.findByIdAndUpdate(id, { $set: input }, { new: true });
+  if (!row) throw new Error("Story not found");
+  return row.toJSON();
 }
 
 export async function deleteStoryBySlug(slug: string) {
   requireDb();
-  return prisma.successStory.delete({ where: { slug } });
+  await connectToDatabase();
+  const row = await SuccessStoryModel.findOneAndDelete({ slug });
+  if (!row) throw new Error("Story not found");
+  return row.toJSON();
 }

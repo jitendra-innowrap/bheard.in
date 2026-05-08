@@ -1,4 +1,6 @@
-import { prisma } from "@/lib/db/prisma";
+import { Types } from "mongoose";
+import { connectToDatabase } from "@/lib/db/mongoose";
+import { CareerModel } from "@/lib/db/models";
 import type { CareerInput, CareerUpdateInput } from "@/lib/validators/careers.validator";
 
 function requireDb() {
@@ -9,63 +11,77 @@ function requireDb() {
 
 export async function listActiveCareers() {
   requireDb();
-  return prisma.career.findMany({
-    where: { active: true },
-    orderBy: [{ createdAt: "desc" }],
-  });
+  await connectToDatabase();
+  const rows = await CareerModel.find({ active: true }).sort({ createdAt: -1 });
+  return rows.map((row) => row.toJSON());
 }
 
 export async function listAllCareers() {
   requireDb();
-  return prisma.career.findMany({
-    orderBy: [{ updatedAt: "desc" }],
-  });
+  await connectToDatabase();
+  const rows = await CareerModel.find({}).sort({ updatedAt: -1 });
+  return rows.map((row) => row.toJSON());
 }
 
 export async function getActiveCareerBySlug(slug: string) {
   requireDb();
-  return prisma.career.findFirst({ where: { slug, active: true } });
+  await connectToDatabase();
+  const row = await CareerModel.findOne({ slug, active: true });
+  return row ? row.toJSON() : null;
 }
 
 export async function getCareerBySlug(slug: string) {
   requireDb();
-  return prisma.career.findUnique({ where: { slug } });
+  await connectToDatabase();
+  const row = await CareerModel.findOne({ slug });
+  return row ? row.toJSON() : null;
 }
 
 export async function getCareerById(id: string) {
   requireDb();
-  return prisma.career.findUnique({ where: { id } });
+  await connectToDatabase();
+  if (!Types.ObjectId.isValid(id)) return null;
+  const row = await CareerModel.findById(id);
+  return row ? row.toJSON() : null;
 }
 
 export async function createCareer(input: CareerInput) {
   requireDb();
-  return prisma.career.create({
-    data: input,
-  });
+  await connectToDatabase();
+  const row = await CareerModel.create(input);
+  return row.toJSON();
 }
 
 export async function updateCareerBySlug(slug: string, input: CareerUpdateInput) {
   requireDb();
-  return prisma.career.update({
-    where: { slug },
-    data: input,
-  });
+  await connectToDatabase();
+  const row = await CareerModel.findOneAndUpdate({ slug }, { $set: input }, { new: true });
+  if (!row) throw new Error("Career not found");
+  return row.toJSON();
 }
 
 export async function updateCareerById(id: string, input: CareerUpdateInput) {
   requireDb();
-  return prisma.career.update({
-    where: { id },
-    data: input,
-  });
+  await connectToDatabase();
+  if (!Types.ObjectId.isValid(id)) throw new Error("Invalid career id");
+  const row = await CareerModel.findByIdAndUpdate(id, { $set: input }, { new: true });
+  if (!row) throw new Error("Career not found");
+  return row.toJSON();
 }
 
 export async function deleteCareerBySlug(slug: string) {
   requireDb();
-  return prisma.career.delete({ where: { slug } });
+  await connectToDatabase();
+  const row = await CareerModel.findOneAndDelete({ slug });
+  if (!row) throw new Error("Career not found");
+  return row.toJSON();
 }
 
 export async function deleteCareerById(id: string) {
   requireDb();
-  return prisma.career.delete({ where: { id } });
+  await connectToDatabase();
+  if (!Types.ObjectId.isValid(id)) throw new Error("Invalid career id");
+  const row = await CareerModel.findByIdAndDelete(id);
+  if (!row) throw new Error("Career not found");
+  return row.toJSON();
 }

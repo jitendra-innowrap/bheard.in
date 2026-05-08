@@ -1,4 +1,4 @@
-import type { SuccessStory } from "@prisma/client";
+import type { SuccessStoryRecord as SuccessStory } from "@/lib/db/models";
 import type { CaseStudyContent, CaseStudyExecutionBlock, CaseStudyStat } from "@/lib/case-studies";
 import { getCaseStudyBySlug } from "@/lib/case-studies";
 
