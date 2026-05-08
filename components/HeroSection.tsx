@@ -172,13 +172,14 @@ export default function HeroSection() {
         className="pointer-events-none absolute top-1/4 right-0 z-0 h-2/3 w-2/3 rounded-full bg-primary/10 blur-[160px]"
       />
       <div className="flex w-screen h-[calc(100vh-100px)] top-0 left-0  absolute">
-        <h2
+        <div
+          aria-hidden="true"
           data-anim="hero-bheard"
           style={{ zIndex: 3 }}
           className="pointer-events-none absolute -bottom-10 left-0 translate-y-20 font-headline text-[clamp(4rem,18vw,20rem)] font-black uppercase leading-[0.9] text-neutral-200 opacity-0 select-none motion-reduce:translate-y-0 motion-reduce:opacity-100"
         >
           BHEARD
-        </h2>
+        </div>
       </div>
       <div className="pointer-events-none absolute inset-0 z-[2] min-h-full w-full overflow-hidden">
         <div
@@ -199,9 +200,15 @@ export default function HeroSection() {
           >
             Integrated Branding &amp; Tech Agency &nbsp;·&nbsp; Mumbai, India
           </span>
-          <h1 className="font-headline kinetic-text mb-12 text-[clamp(3.5rem,12vw,10rem)] font-black text-neutral-900">
+          {/* Real semantic h1 for SEO + assistive tech */}
+          <h1 className="sr-only">Capturing voice in the noise.</h1>
+          {/* Decorative animated layer — hidden from assistive tech */}
+          <div
+            aria-hidden="true"
+            className="font-headline kinetic-text mb-12 text-[clamp(3.5rem,12vw,10rem)] font-black text-neutral-900"
+          >
             {heroLetters}
-          </h1>
+          </div>
         </div>
         <div className="md:col-span-4 md:col-start-9">
           <p

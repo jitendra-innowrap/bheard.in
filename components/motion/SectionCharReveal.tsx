@@ -157,6 +157,10 @@ export default function SectionCharReveal({
     { scope: rootRef, dependencies: [motionKey], revertOnUpdate: true }
   );
 
+  const Tag = titleAs;
+  const accessibleTitle = title.replace(/\n/g, " ");
+  const accessibleDescription = description?.replace(/\n/g, " ");
+
   const body = (
     <div className={innerClassName}>
       {eyebrow ? <SectionEyebrow>{eyebrow}</SectionEyebrow> : null}
@@ -168,14 +172,19 @@ export default function SectionCharReveal({
         }
       >
         <div className="min-w-0 flex-1">
-          {(() => {
-            const Tag = titleAs;
-            return (
-              <Tag className={titleClass}>{renderCharLines(title, "title", "title")}</Tag>
-            );
-          })()}
+          {/* Real semantic element — exposed to crawlers, screen readers, copy/paste */}
+          <Tag className="sr-only">{accessibleTitle}</Tag>
+          {/* Decorative animated layer — hidden from assistive tech */}
+          <div aria-hidden="true" className={titleClass}>
+            {renderCharLines(title, "title", "title")}
+          </div>
           {description ? (
-            <p className={descClass}>{renderCharLines(description, "desc", "desc")}</p>
+            <>
+              <p className="sr-only">{accessibleDescription}</p>
+              <div aria-hidden="true" className={descClass}>
+                {renderCharLines(description, "desc", "desc")}
+              </div>
+            </>
           ) : null}
         </div>
         {trailing ? <div className="shrink-0">{trailing}</div> : null}
