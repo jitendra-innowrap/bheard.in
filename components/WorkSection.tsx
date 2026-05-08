@@ -169,9 +169,7 @@ export default function WorkSection() {
         className={`mx-auto flex max-w-7xl flex-col items-end justify-between gap-8 md:flex-row ${sectionTitleMarginDisplay}`}
         title={"Selected\nworks"}
         trailing={
-          <p className="max-w-sm border-b border-primary pb-2 font-body text-xs font-bold uppercase tracking-widest text-neutral-700">
-            View Archive (24)
-          </p>
+          ""
         }
       />
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 sm:gap-4 md:grid-cols-12 md:gap-4">

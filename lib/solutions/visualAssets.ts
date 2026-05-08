@@ -87,8 +87,8 @@ export const PROCESS_THUMB_TECH: Record<string, { imageSrc: string; imageAlt: st
     imageAlt: "Whiteboard ideation session",
   },
   Wireframing: {
-    imageSrc: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24d?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Wireframes sketched for a product",
+    imageSrc: "https://images.unsplash.com/photo-1505238680356-667803448bb6?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Product flow wireframes arranged on a design desk",
   },
   Development: {
     imageSrc: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
@@ -110,7 +110,7 @@ export const CASE_MOMENT_THUMBS: Record<string, { imageSrc: string; imageAlt: st
     imageAlt: "Social engagement on mobile",
   },
   ret: {
-    imageSrc: "https://images.unsplash.com/photo-1432888498266-38ffec018eaf?auto=format&fit=crop&w=900&q=80",
+    imageSrc: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=80",
     imageAlt: "Audience watching content on a laptop",
   },
   reach: {
