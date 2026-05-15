@@ -124,6 +124,7 @@ export async function POST(req: NextRequest, context: { params: Promise<Params> 
       resumeMime: resume.type || "application/octet-stream",
       resumeSize: resume.size,
     });
+
     return NextResponse.json(
       { ok: true, id: created.id, message: "Application received" },
       { status: 201 }

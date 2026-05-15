@@ -69,8 +69,8 @@ export default function ServicesVariantOne() {
                 className="absolute inset-[-6%] will-change-transform"
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1600&q=80"
-                  alt="Hospitality lobby with warm lighting"
+                  src="/assets/home/proof-of-craft/hospitality-lifestyle.webp"
+                  alt="Radisson Blu hotel facade"
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 58vw"
@@ -79,22 +79,22 @@ export default function ServicesVariantOne() {
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <figcaption className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  Hospitality &amp; experience
+                  Hospitality &amp; lifestyle
                 </p>
                 <p className="mt-2 font-headline text-2xl font-black uppercase leading-tight text-surface md:text-3xl">
-                  Brand repositioning + performance media, moving as one system.
+                  Luxury storytelling + performance media, moving as one system.
                 </p>
               </figcaption>
             </figure>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:col-span-5 md:grid-cols-1 md:grid-rows-2">
               <SignalCard
-                stat="+182%"
-                label="Lift in qualified inquiries after a 90-day brand and media reset."
+                stat="4×"
+                label="Stronger digital visibility during the campaign cycle."
               />
               <SignalCard
-                stat="41%"
-                label="Lower acquisition cost once landing journeys matched ad promise."
+                stat="9.4%"
+                label="Lower acquisition costs while generating 3× more leads."
               />
             </div>
           </div>
@@ -102,8 +102,8 @@ export default function ServicesVariantOne() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:col-span-5 md:grid-cols-1 md:grid-rows-2">
               <SignalCard
-                stat="3.4×"
-                label="Engagement on flagship launch when story, UI, and media moved as one system."
+                stat="275K+"
+                label="Reach generated through event-led digital storytelling."
               />
               <SignalCard
                 stat="Weekly"
@@ -120,8 +120,8 @@ export default function ServicesVariantOne() {
                 className="absolute inset-[-6%] will-change-transform"
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80"
-                  alt="Team collaborating in a modern office"
+                  src="/assets/home/proof-of-craft/events-digital-campaigns.webp"
+                  alt="Team collaborating on events and digital campaigns"
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 58vw"
@@ -130,10 +130,10 @@ export default function ServicesVariantOne() {
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <figcaption className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  Product &amp; performance
+                  Events &amp; digital campaigns
                 </p>
                 <p className="mt-2 font-headline text-2xl font-black uppercase leading-tight text-surface md:text-3xl">
-                  Design systems and growth engineering, handed off as a playbook.
+                  Events, media &amp; digital momentum — built in sync.
                 </p>
               </figcaption>
             </figure>
