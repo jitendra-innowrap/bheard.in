@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { apiError } from "@/lib/api/responses";
 import { assertAdminApiAuth } from "@/lib/auth/adminSession";
-import { sendLeadNotificationMail } from "@/lib/integrations/microsoftGraphMail";
+import { sendLeadNotificationMail } from "@/lib/integrations/formMail";
 import { createContactLead, listContactLeads } from "@/lib/services/contactLeads.service";
 import { contactLeadSchema } from "@/lib/validators/contactLead.validator";
 
@@ -50,8 +50,14 @@ export async function POST(req: NextRequest) {
         req.nextUrl.origin
       );
     } catch (mailError) {
-      console.error("Lead saved but Graph mail send failed:", mailError);
-      return apiError(500, "Lead saved, but email notification failed. Please retry.");
+      const detail = mailError instanceof Error ? mailError.message : "Unknown mail error";
+      console.error("Lead saved but notification email failed:", detail);
+      return apiError(
+        500,
+        detail.includes("SMTP_PASS") || detail.includes("personal mailbox")
+          ? detail
+          : "Lead saved, but email notification failed. Please retry."
+      );
     }
 
     return NextResponse.json({ data: created }, { status: 201 });
